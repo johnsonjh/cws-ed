@@ -1,0 +1,47 @@
+#! /bin/csh
+rm -f compiler config.h
+echo -n "How do you run the C-compiler on this system (example: cc)? "
+echo
+set compile=$<
+echo -n "What flags do you pass to the compiler (example: -O)? "
+echo
+set cflags=$<
+echo "Creating 'compiler'..."
+echo "CC=$compile" >compiler
+echo "CFLAGS=$cflags" >> compiler
+cat compiler
+echo -n "Does your compiler understand the 'signed' keyword (y,n)? "
+echo
+set signed=$<
+echo -n "Does your C library include the 'mmap' and 'munmap' routines (y,n)? "
+echo
+set mmap=$<
+echo -n "Does your C library include a working 'sbrk' routine (y,n)? "
+echo
+set sbrk=$<
+echo -n "Does your system support FTP (y,n)? "
+echo
+set ftp=$<
+echo -n "Does your system have access to a news server (y,n)? "
+echo
+set news=$<
+#echo "Checking for 'ranlib'..."
+#echo "main(){char a;}" >test.c
+#$compile -c test.c
+#ar cq test.a test.o
+#ranlib test.a >&test.out
+#set ranlib=0
+#if ( -z test.out ) then
+#	echo "rlib=ranlib" >>compiler
+#else
+#	echo "rlib=echo" >>compiler
+#endif
+#rm -f test.c test.o test.a
+echo "Creating 'config.h'..."
+echo "/* This file was created by the 'configure' procedure.*/" >config.h
+if ( $signed == 'n' || $signed == 'N' ) echo "#define NO_SIGNED_CHAR" >>config.h
+if ( $mmap == 'n' || $mmap == 'N' ) echo "#define NO_MMAP" >> config.h
+if ( $sbrk == 'n' || $sbrk == 'N' ) echo "#define NO_SBRK" >> config.h
+if ( $ftp == 'n' || $ftp == 'N' ) echo "#define NO_FTP" >> config.h
+if ( $news == 'n' || $news == 'N' ) echo "#define NO_NEWS" >> config.h
+cat config.h

@@ -1,0 +1,249 @@
+.TH ED 1 "4 May 1993"
+.SH NAME
+ED \-
+Portable text and binary file editor
+.SH SYNOPSIS
+.B ED terminal-file setup-file width height
+.BI [\-v]
+.BI [\-u]
+.BI [\-k]
+.BI [\-b]
+.BI [\-h]
+.BI [\-r[<file>]]
+.BI [\-t[<file>]]
+.BI [\-f[<file>]]
+.BI [\-m]
+.BI [\-1]
+.BI [\-n\ <news-server>]
+.BI [\-N\ <news-server>]
+.BI [\-i<linenumber>]
+.BI [\-s<string>]
+.BI [\-p<string>]
+.BI [\-l<string>]
+.BI [\-w<string>]
+.BI [\-c<character>]
+.IR [file[\ file...]]
+.SH DESCRIPTION
+.B
+.SM ED
+is a general-purpose editor that runs under a variety of environments and
+hardware platforms. It currently runs on VMS, DOS, OS2, SunOS, NeXT, AIX,
+HPUX, IRIX and WindowsNT.
+.LP
+.SM ED
+has its own online help, which is available when the program is running. This
+(rather voluminous) help is not duplicated here.
+.SH OPTIONS
+.TP 5
+.BI terminal-file
+Specifies the name of the terminal configuration file that is appropriate for
+the terminal (or emulator) you are using. A variety of such files, called
+vt100.ed, sun.ed, and so on, should be in the same directory as the ED program
+itself. See the -z option if you want to create a configuration file for a
+keyboard with which ED is not yet familiar. For a more complete description,
+run ED, type ^Z, enter 'help terminals' and hit RETURN.
+.TP 5
+.BI setup-file
+Specifies the name of your personal setup file. If this file doesn't exist, ED
+will try to create it, and copy a default setup into it. It takes this default setup
+from the file 'ed.setup' that resides in the same directory as the ED program itself.
+.TP 5
+.BI width
+Specifies the
+.I width
+of your terminal (the number of columns available). We generally define this
+and the
+.I height
+by using the 'stty size' command (under unix) or symbols (under VMS).
+.TP 5
+.BI height
+Specifies the
+.I height
+of your terminal (the number of lines on the screen).
+.TP 5
+.BI \-v
+Prints ED's version number and licensing information, then quits.
+.TP 5
+.BI \-u
+Update the position of the cursor on the status line continually.
+.TP
+.BI \-k
+Create a .BAK file whenever a new version of a file is written to disk.
+.TP
+.BI \-b
+Edit in
+.I binary
+mode. This lets you edit eight-bit binary files. Printable characters appear as
+themselves; non-printable characters appear as <hh> where hh is a two-digit
+hexadecimal representation of the value of the character.
+.TP
+.BI \-h
+Exactly like -b, except that even printable characters are displayed in <hh>
+format.
+.TP
+.BI \-r[<file>]
+Runs ED in
+.I recovery
+mode. ED takes its commands from the journal file <file> (or the default
+journal file, if you don't specify one). When the journal file ends, ED
+displays the result of all the edits and allows you to continue editing
+normally. Additional keystrokes are appended to the journal file.
+.TP
+.BI \-t[<file>]
+Does what -r does, but doesn't display anything or let you continue editing
+after the journal file ends. Use this when you want to run ED as a text file
+processor.
+.TP
+.BI \-f[<file>]
+Treats <file> as a list of file names to edit. Each line of <file> is taken as
+the name of a file you want to edit. If you leave <file> off (and just have -f)
+the list of files to edit is read from standard input (unix systems only).
+Other command line options may appear in the lines of the list file, e.g.:
+-i782 file.c.
+.TP
+.BI \-m
+Puts ED in 'multiple' mode. Ordinarily, if you say ED *.c, ED edits all the .c
+files, one by one. If you say ED -m *.c, ED tries to open all of the .c files
+at once, in multiple windows. If it can't do all of them at once, it does as
+many as it can, and then gives you another batch after you EXIT or QUIT. You can
+use the ABORT command to break out of this if necessary.
+.TP
+.BI \-1
+Puts ED in 'single pass' mode such that you are not prompted for additional
+files when the file list from the original command line is exhausted.  This
+is the behavior that many people expect from EDT.
+.TP
+.BI \-n\ <news-server>\ or\ \-N\ <news-server>
+Calls up ED in news-reader mode (so you can read the network news). You must
+supply the name of your news server. When you use -n, ED displays only those
+newsgroups to which you are subscribed. -N displays all newsgroups.
+.TP
+.BI \-i<linenumber>
+Puts you on line number <linenumber> of the file when ED starts editing it.
+.TP
+.BI \-s<string>
+Sets the initial value of the search string for the editing session.
+.TP
+.BI \-p<string>
+Sets the initial contents of the paste buffer for the editing session.
+.TP
+.BI \-l<string>
+Sets the initial contents of the line buffer for the editing session.
+.TP
+.BI \-w<string>
+Sets the initial contents of the word buffer for the editing session.
+.TP
+.BI \-c<string>
+Sets the initial contents of the char buffer for the editing session.
+.TP
+.BI \-z
+Puts ED in a special mode that lets you 'teach' it how your keyboard works.
+This mode is pretty much self-explanatory. You should know that it will ask you
+for the name of an existing configuration file that might work marginally for
+your terminal type.
+.LP
+.SH USAGE
+If
+.I file
+is not specified, ED prompts you for filenames (provided you aren't editing a
+file list with the -f option). If you specify one or more files, ED lets you
+edit them in the order specified. If you specify a file name as a dash "-", ED
+edits the standard input, and writes to the standard output (unix systems only).
+Some wildcards are allowed in file names: the character * matches any string,
+the character % matches any single character, and the string ... matches any
+string of directories. Regular expressions are not supported, except (under
+unix) insofar as the shell globs them for you.
+.sp
+If
+.I file
+is a directory, ED lists the contents of the directory (including other
+directories) and lets you edit files by typing 'a' or 'b' when the cursor is on a
+line containing the file's name. Typing 'a' loads the file in ASCII mode, 'b' loads
+it in BINARY mode. Typing 'a' or 'b' on a directory moves you to that
+directory, and generates a new listing.
+.sp
+In the listing, 'd' in the first column indicates a directory file.
+The list also shows the size of each file in bytes, and the last-modification
+date and time.
+.sp
+You can open files on other hosts by specifying the file as:
+.sp
+/host:path
+.sp
+or
+.sp
+/user@host:path
+.sp
+.SH EXAMPLES
+We recommend defining an alias (under the Cshell) to run ED:
+.sp
+alias e '/bin/ed /bin/$TERM.ed ~/ed.setup `stty size`'
+.sp
+With this alias in place, you could edit file.dat by saying:
+.sp
+e file.dat
+.sp
+To edit all your .c files:
+.sp
+e *.c
+.sp
+You can string things together:
+.sp
+e [a-h]*.h sources ../*/main.c
+.sp
+A more complex example, which allows you to selectively edit every appearance
+of a string in a set of files:
+.sp
+alias l 'egrep -n \\!:1 \\!:2 | awk -F: -f ~/l | e -s\\!:1 -f'
+.sp
+Where ~/l contains:
+.sp
+{printf("-i%s %s\\n",$2,$1)}
+.sp
+This confusing sequence of commands first does a search for a string in a set of
+files. The result is piped to a awk command that converts the egrep output:
+.sp
+file.c:105:    ...text...
+.sp
+into:
+.sp
+-i105 file.c
+.sp
+That is then piped into ED as a file list. What finally happens is that ED pops
+up with the cursor on each record containing the search string.
+.sp
+Thus, saying:
+.sp
+l xyzzy *.c
+.sp
+would call ED up on each appearance of the string 'xyzzy' in all your .c files
+(preloading the search string with 'xyzzy').
+.sp
+.SH ENVIRONMENT
+ED understands environment variables used in file names, as well as expressions
+like ~/file.
+.SH FILES
+ED uses two files when you start it up. The first is a 'terminal configuration
+file,' which tells ED how to talk to your terminal or terminal emulator. The
+second is your personal startup file, which is usually called ed.setup, and
+should reside in your home directory. When you invoke ED, you specify these two
+file names on the command line. If the ed.setup file doesn't exist, ED will create
+it, and load it with a default setup.
+.LP
+ED also uses a help file (called ed.hlp) which it looks for in the same
+directory as the ED program itself. This file is parsed when you first issue a
+HELP command from within ED.
+.SH BUGS
+Running out of memory is not handled well in some cases.
+.LP
+You cannot edit a file that has a literal * in its name, without also editing
+other files that match when the * is treated as a wildcard. If this annoys you,
+you might want to rename such files before editing them.
+.LP
+ED is abominably slow when searching for strings. This is because the code that
+does this is a sloppy hack. Anyone wishing to fix it is strongly encouraged to
+do so.
+.LP
+ED wastes a lot memory when loading files that contain a lot of blank records.
+This is because of the general design of the program, and probably couldn't be
+fixed without major surgery.

@@ -1,0 +1,150 @@
+# Makefile for Windows NT SDK
+#
+# To build ED enter:  nmake -f makefile.nt
+
+!include <ntwin32.mak>
+
+.c.obj:
+	$(cc) $(cflags) $(cvars) -Oxs $*.c >> edcomp.err
+
+# Two object file groups because of 1K command line limit
+
+OBJ1 = \
+main.obj \
+autowrp.obj \
+backspac.obj \
+bigger_w.obj \
+buffer_a.obj \
+buffer_e.obj \
+calculat.obj \
+calc_lim.obj \
+carriage.obj \
+cfg.obj \
+cfrendly.obj \
+change_c.obj \
+command.obj \
+copier.obj \
+copy_rec.obj \
+cqsort.obj \
+dir.obj \
+do_grep.obj \
+down_arr.obj \
+edit.obj \
+envir_su.obj \
+express.obj \
+extensio.obj \
+file_lis.obj \
+find_cha.obj \
+find_col.obj \
+find_fil.obj \
+find_str.obj \
+fixup_re.obj \
+fix_botr.obj \
+fix_disp.obj \
+fix_scro.obj \
+ftp.obj \
+get_colb.obj \
+get_colu.obj \
+get_mark.obj \
+get_offs.obj \
+get_posi.obj \
+get_seld.obj \
+get_toke.obj \
+help.obj \
+help_get.obj \
+help_loa.obj \
+imalloc.obj \
+include_.obj \
+init_ter.obj \
+inquire.obj \
+insert.obj \
+insert_w.obj \
+insq.obj \
+journal.obj
+
+OBJ2 = \
+killer.obj \
+left_arr.obj \
+load_buf.obj \
+load_fil.obj \
+load_key.obj \
+match_pa.obj \
+match_se.obj \
+move_eol.obj \
+move_lin.obj \
+move_wor.obj \
+new_botr.obj \
+new_wind.obj \
+openline.obj \
+output_f.obj \
+paint.obj \
+paint_wi.obj \
+parse_co.obj \
+parse_fn.obj \
+put.obj \
+rec_chgc.obj \
+rec_copy.obj \
+rec_inse.obj \
+rec_merg.obj \
+rec_spli.obj \
+rec_trim.obj \
+ref_disp.obj \
+ref_wind.obj \
+remove_w.obj \
+restore_.obj \
+right_ar.obj \
+save_win.obj \
+scroll_d.obj \
+scroll_u.obj \
+select.obj \
+set_para.obj \
+set_wind.obj \
+show_par.obj \
+slip_mes.obj \
+smaller_.obj \
+sort_rec.obj \
+store_pa.obj \
+str_to_b.obj \
+tabstop.obj \
+toss_dat.obj \
+trim.obj \
+unselect.obj \
+up_arrow.obj \
+version.obj \
+wincom.obj \
+word_fil.obj \
+regex.obj \
+urename.obj \
+ttyput.obj
+
+all: ed.exe
+
+ed.exe : config.h edntobj.lis $(OBJ1) $(OBJ2)
+  $(link) $(conflags) -out:$*.exe -map:ed.map @edntobj.lis $(conlibs) wsock32.lib
+
+edntobj.lis:
+ @echo $(OBJ1) > edntobj.lis
+ @echo $(OBJ2) >> edntobj.lis
+
+config.h:
+ @echo #define GNUDOS                      > config.h
+ @echo #define USE_NCS                    >> config.h
+ @echo #define NO_MMAP                    >> config.h
+ @echo #define NO_NEWS                    >> config.h
+ @echo #define NO_SBRK                    >> config.h
+ @echo #define DIRENT_PC                  >> config.h
+ @echo #define CUSERID_ENV "USERNAME"     >> config.h
+ @echo #define sleep(x)                   >> config.h
+ @echo #define my_fscanf fscanf           >> config.h
+ @echo #define my_sscanf sscanf           >> config.h
+ @echo #define rename unix_rename         >> config.h
+
+clean:
+ -del *.obj
+ -del edntobj.lis
+ -del config.h
+ -del edcomp.err
+ -del ed.map
+
+# DEPENDENCIES
+

@@ -1,0 +1,33 @@
+~/ed.jou
+shell=/bin/csh
+tabs=5
+curtab=1
+NORMAL
+t       t       t       t       t       t       t       t       t       t       t       t       t       t       t       t       t       t       t       t       t
+c
+t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t
+fortran
+t       t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t
+macro
+t               t        t     t     t     t     t     t     t     t     t     t     t     t     t     t     t     t     t     t     t     t     t     t     t     t    t    t
+none
+ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt
+wrap=80
+section=18
+word=032009,.+=-*/[]{}()010011012013
+page=012
+paragraph=013013
+search=gbnnnc
+stable=~/categories.st
+close=n
+parens=(){}[]
+defext=
+auto=n
+cfriendly=n
+boxmode=n
+wraparound=n
+casechange=Opposite
+overstrike=n
+grepmode=verbose
+wildcard=?
+ndefined=0

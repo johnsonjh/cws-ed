@@ -1,0 +1,39 @@
+This directory has the source for a small program called "set_size," which
+tries to determine the number of rows and columns your terminal has. It does
+this by sending a sequence of characters that, in most cases, will make the
+terminal respond in a way that lets the size be calculated.
+
+To build set_size, say:
+
+cc -O set_size.c -o set_size
+strip set_size
+
+(if this gives an error, try putting -DNO_TERMSIZE on the cc command line).
+
+If your system supports it, set_size does the equivalent of an
+stty rows $ROWS cols $COLS from the program, which allows you not to worry
+about `stty size` in the command alias or environment variables.  If your
+system does not support these IOCTL calls, you will need to ask set_size
+to generate a tiny script for you to execute to set these environment 
+variables for you.
+
+There are two files included here that you can insert into your .cshrc file (if
+you use the C shell) or your .profile file (if you use the Bourne or Korn
+shell. They are called set_size.csh (for the C shell) and set_size.ksh (for
+the Bourne or Korn shell.
+
+There are also two files included for use with systems that do not support
+the IOCTL calls called posix_size.[csh,ksh].
+
+Unlike earlier releases, we have tried to make it such that defaults of 
+"0 0" for terminal size will always do the right thing.
+
+These files define the command "ed" to run ED. You can change the "ed" to
+something if "ed" is already one of your aliases. Note that you should replace
+the string /usr/local/bin with the appropriate pathname if you don't install ED
+there.
+
+BUGS
+
+set_size does not currently purge the typeahead buffer and will become
+confused if you type before it locks the keyboard.

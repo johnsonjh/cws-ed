@@ -1,0 +1,48 @@
+$ SET NOVERIFY
+$! makefile for ed
+$!
+$! To build ed, say:
+$!
+$!	@make.vms    or     submit make.vms
+$!
+$! Submit is recommended - this takes around 30 minutes on a uVax II
+$!
+$ proc=f$envir("PROCEDURE")
+$ direct=f$extr(0,f$loca("]",proc)+1,proc)
+$ direct=f$extr(0,f$loca(">",direct)+1,direct)
+$ set default 'direct	! This procedure can be submitted as batch job
+$ show default
+$ say := write sys$output
+$!
+$ @configure			! also sets ed_cc_opts as necessary for AXP
+$!
+$! Note, don't try to glom the first two cc commands together unless you
+$! want to see a compiler bugcheck on some compilers.
+$!
+$ say "Compiling..."
+$ cc/opti=noinli/nolist 'ed_cc_opts -
+AUTOWRP.C,BACKSPACE.C,BIGGER_WIN.C,BUFFER_APP.C,BUFFER_EMPTY.C,CALCULATE.C,CALC_LIMITS.C,-
+CARRIAGE_RET.C,CFG.C,CFRENDLY.C,CHANGE_CASE.C,COMMAND.C,COPIER.C,COPY_RECORDS.C,-
+DOWN_ARROW.C,CQSORT.C,DIR.C,DO_GREP.C,EDIT.C,ENVIR_SUBS.C,EXPRESS.C,EXTENSION.C,FILE_LIST_I.C,-
+FIND_CHAR.C,FIND_COLUMN.C,FIND_FILES.C,FIND_STRING.C,FIXUP_RECS.C,FIX_BOTREC.C,-
+FIX_DISPLAY.C,FIX_SCROLL.C,FTP.C,GET_COLBYT.C,GET_COLUMN.C,GET_MARKDIR.C,GET_OFFSET.C,-
+GET_POSITION.C,GET_SELDIR.C,GET_TOKEN.C,HELP.C,HELP_GET_KW.C,HELP_LOAD.C,-
+IMALLOC.C,INCLUDE_FILE.C,INIT_TERM.C,INQUIRE.C,INSERT.C,INSERT_WIN.C,INSQ.C,-
+JOURNAL.C,KILLER.C,LEFT_ARROW.C
+$ cc/opti=noinli/nolist 'ed_cc_opts -
+LIBC.C,LOAD_BUFFER.C,LOAD_FILE.C,LOAD_KEY.C,-
+MAIN.C,MATCH_PAREN.C,MATCH_SEARCH.C,MOVE_EOL.C,MOVE_LINE.C,MOVE_WORD.C,-
+LOAD_NEWS.C,LOAD_POST.C,NEWSRC.C,NEWS_GROUP.C,NNTP.C
+$ cc/opti=noinli/nolist 'ed_cc_opts -
+NEW_BOTREC.C,NEW_WINDOW.C,OPENLINE.C,OUTPUT_FILE.C,PAINT.C,PAINT_WINDOW.C,-
+PARSE_COM.C,PARSE_FNM.C,PUT.C,REC_CHGCAS.C,REC_COPY.C,REC_INSERT.C,REC_MERGE.C,-
+REC_SPLIT.C,REC_TRIM.C,REF_DISPLAY.C,REF_WINDOW.C,REGEX.C,REMOVE_WIN.C,-
+RESTORE_PAR.C,RIGHT_ARROW.C,SAVE_WINDOW.C,SCROLL_DOWN.C,SCROLL_UP.C,SELECT.C,-
+SET_PARAM.C,SET_WINDOW.C,SHOW_PARAM.C,SLIP_MESSAGE.C,SMALLER_WIN.C,SORT_RECS.C,STORE_PARAM.C,STR_TO_BUF.C,-
+TABSTOP.C,TOSS_DATA.C,TRIM.C,TTYPUT.C,UNSELECT.C,UP_ARROW.C,WINCOM.C,WORD_FILL.C,VERSION.C
+$ say "Creating ed.olb..."
+$ libr/crea=blocks:850 ed *.obj;
+$ dele *.obj;*
+$ say "Linking..."
+$ @vmslink
+$ say "ED.EXE is complete."

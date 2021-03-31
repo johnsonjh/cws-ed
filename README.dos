@@ -1,0 +1,138 @@
+ED was written by Rush Record, and is currently maintained by Charles Sandmann.
+This port of ED to DOS was done by Charles Sandmann (sandmann@clio.rice.edu).
+This file contains features which are unique to the PC versions.
+
+A 386 (or better) processor is required to run this editor.  If you don't have
+a math coprocessor, then you need EMU386 to use the calculator (see below for
+setup).  The code was compiled using the DJGPP version 1.11 of the 
+GNU C 2.5.7 compiler.  The extender is GO32 V1.10e (DPMI support with bug 
+fixes and COFF support) and is imbedded into the executable image for speed.  
+All of the environment variables and features (and limitations) of the GO32 
+extender apply to this editor.
+
+The default keypad layout is as follows (bindings in the PC.ED file).  Note
+that NumLock is treated as the keypad key GOLD and not a toggle key.
+
++-------+-------+-------+      +-------+-------+-------+-------+
+|       |       | [PAGE]|      | [Num  |WINDOW | FIND  | UNDL  |
+| [INS] | [HOME]|  [UP] |      |  Lock]|  [/]  |  [*]  |  [-]  |
+|       |  BOL  | PG UP |      | GOLD  | CLONE |FINDNXT| DELL  |
++-------+-------+-------+      +-------+-------+-------+-------+
+| UNDC  |       | [PAGE]|      |COMMAND| FILL  |REPLACE|       |
+| [DEL] | [END] | [DOWN]|      |  [7]  |  [8]  |  [9]  |       |
+| DELC  |  EOL  | PGDWN |      | PAGE  |SECTION|APPEND | UNDW  |
++-------+-------+-------+      +-------+-------+-------+  [+]  |
+                               |BOTTOM |  TOP  | PASTE | DELW  |
+                               |  [4]  |  [5]  |  [6]  |       |
+                               | FORW  | BACKW |  CUT  |       |
+        +-------+              +-------+-------+-------+-------+
+        | RETURN|              |CHGCASE|DELEOL |SPECINS| SUBST |
+        |  [UP] |              |  [1]  |  [2]  |  [3]  |       |
+        |   UP  |              | WORD  |  EOL  | CHAR  |       |
++-------+-------+-------+      +-------+-------+-------+[Enter]|
+| SCRLL |  MARK | SCRLR |      |   OPENLINE    | RESET |       |
+| [<-]  | [DOWN]|  [->] |      |      [0]      |  [.]  |       |
+| LEFT  |  DOWN | RIGHT |      |   NEXTLINE    |SELECT | ENTER |
++-------+-------+-------+      +---------------+-------+-------+
+
+The grey Insert, Home, PageUp, End, and PageDown keys may be defined as 
+desired.  They do not have a GOLD state.  Keys F1 to F12 may also be defined
+as desired.  They do not have a GOLD state either.  The only keys which GOLD
+may be applied to are the keypad keys, arrows, and Grey Delete (which takes
+the place of the keypad [,] key on DEC type keypads).  GOLD is also valid
+for the Alpha and Numeric Keys.  If you don't like this setup you are welcome
+to change it with the -z qualifier to define your own keypad mapping.
+
+NumLock is forced into the "ON" state so that the keypad 0 Ins key will
+autorepeat.  If this causes problems you may suppress this behavior by
+placing the following line in your AUTOEXEC.BAT:   SET ED_NUMLK=N
+This is useful on notebook computers and under OS/2 DOS emulation.
+It is required if you want clipboard support to work under Windows, since
+the clipboard tries to turn off NumLock and ED turns it back on after
+each key.  This makes each alpha key appear as "gold" alpha (a command or
+eight bit character) unless you SET ED_NUMLK=N.
+
+Emulation of a 387 (only needed if you don't have a coprocessor and want to
+use the calculator) can be provided by adding the following line to your
+AUTOEXEC.BAT:  SET GO32=emu c:\edc\emu387
+This will unfortunately not work under Windows or DPMI, in which case you
+can't use the calculator.
+
+The PC.SET file assumes you are installing the editor in C:\EDC directory.
+If you do otherwise, you must change PC.SET, the .BAT files, and 
+symbols listed above.  The PC.SET also enables some non-EDT type behavior
+that you may not like; in particular you may want to turn off "Auto tabs"
+and "C friendly".  EDT.SET has settings that most closely resemble EDT.
+
+The default "colors" built into the image are suitable for either color or
+monochrome video systems.  If you have a color system and would like to 
+change the text colors, use the image setcolor.  It has built in usage 
+information.
+
+Special DOS limitations:
+
+The BOOKMARK command is not supported due to file naming conventions under DOS.
+The ftp remote file editing commands and newsreader are also not supported.  It
+is suggested that users be careful (or avoid!) using the CD command, and avoid
+changing directories inside a subprocess window.  Any changes in default
+directory (or disk) under the subprocess window will be reflected in the default
+directory for the editor, and the exit (and write) commands may not put 
+output files where you expect them to go.
+
+The source code for ED is freely available, and should be available where you
+got this binary distribution.  If you didn't get the source, and would like
+a copy contact:
+
+  Charles Sandmann     (email: sandmann@clio.rice.edu)
+  527 Asheboro
+  Katy, TX  77450
+  
+Or FTP to riceng.rice.edu, username rhrsoft, password rhrsoft.
+
+I will provide an FTP site, UUENCODED distribution, or even mail you diskettes.
+While you are not required to do so, it is requested you return improvements
+to me for inclusion in future versions.  If you want to be notified of 
+future releases, or just have a question, please send me a message.
+
+If you would like to get a copy of DJGPP (or the sources for the EMU387 and
+GO32.EXE distributed/imbedded in this package) first check simtel sites
+(such as oak.oakland.edu) in the pub/msdos/djgpp directory.  The source
+modifications for GO32 are available on riceng.rice.edu, but not required for 
+ED to work (they just fix a few minor bugs not currently in V1.11's GO32.EXE).
+
+(For the legal types, this is distribution under COPYING section 3c, and you 
+MUST distribute this readme.dos unless you provide source, with me providing 
+section 3b distribution from riceng.rice.edu plus extra methods of distribution
+above if convenient.)
+
+Please report all bugs (save the traceback!), enhancement requests, and
+requests for the source code to the address or email above.  There are no 
+known bugs at this release, so if you see one I don't know about it.  Bugs
+won't get fixed unless you report them!
+
+The source will compile on all machines available for testing at this point,
+so if you have a need for your RS6000, SUN, HP, NEXT or Alpha AXP machines ED 
+will look exactly like what you see here.  The universal editor with source!
+
+If you like ED, the best thing you can do is spread the word.  Give away
+copies to everyone you know.  Rush wanted it to be useful.
+
+Planned enhancements:
+
+The planned enhancements include highlighting of select areas, mouse support,
+and direct X windows display support (for unix systems).  Other requests will
+be considered too, but I don't have a lot of time to work on them.
+
+
+Copyright (C) 1992 by Rush Record
+Copyright (C) 1993, 1994 by Charles Sandmann (sandmann@clio.rice.edu)
+
+ED is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation.
+
+ED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See COPYING (GNU General Public License) for more details.
+
+You can receive a copy of the GNU General Public License by writing to the 
+Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.

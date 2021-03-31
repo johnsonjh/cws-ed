@@ -1,0 +1,21 @@
+# makefile for ED.
+#
+# To build ed, say:
+#
+#	make -f makefile.solaris2
+#
+include objects
+include compiler
+all:	a.out set_size/set_size
+a.out:	config.h main.o $(OBJECTS)
+	$(CC) main.o $(OBJECTS) -lm -lsocket -lnsl -o $@
+	strip $@
+regex.o:	regex.c
+	$(CC) $(CFLAGS) -c -DHAVE_STRING_H -o $@ $<
+%.o:	%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+set_size/set_size:	set_size/set_size.c
+	$(CC) $(CFLAGS) -D__hpux -o $@ set_size/set_size.c
+config.h:
+	@echo You must run configure or autoconfigure before make !
+	@exit 2

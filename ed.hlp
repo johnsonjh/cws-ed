@@ -1,0 +1,2721 @@
+0 HELP
+
+This is an online help library for the  ED  editor,  a  multi-window  text  and
+binary file editor. For information about how this library works, enter "HELP".
+To get rid of this message, hit RETURN.
+
+ED works on a variety of terminals, and you can teach it how to deal  with  new
+terminals  with  relatively  little trouble. See the help topic 'terminals' for
+more information about this.
+
+1 ABORT
+
+The same as QUIT, except that it terminates file list processing and  multiple-
+file  mode. For example, if you specified -ffilename when you started ED, ABORT
+would terminate the list processing prematurely. Similarly, if you used a wild-
+card  in a file name, ABORT would stop the wildcard processing and give you the
+File> prompt immediately. You can also get  out  of  multiple-file  mode  using
+ABORT.
+
+1 ascii
+    0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
+
+ 0  NUL SOH STX ETX EOT ENQ ACK BEL BS  HT  LF  VT  FF  CR  SO  SI
+ 1  DLE DC1 DC2 DC3 DC4 NAK SYN ETB CAN EM  SUB ESC FS  GS  RS  US
+ 2  SP  !   "   #   $   %   &   '   (   )   *   +   ,   -   .   /
+ 3  0   1   2   3   4   5   6   7   8   9   :   ;   <   =   >   ?
+ 4  @   A   B   C   D   E   F   G   H   I   J   K   L   M   N   O
+ 5  P   Q   R   S   T   U   V   W   X   Y   Z   [   \   ]   ^   _
+ 6  `   a   b   c   d   e   f   g   h   i   j   k   l   m   n   o
+ 7  p   q   r   s   t   u   v   w   x   y   z   {   |   }   ~   DEL
+
+1 BOOKMARK
+
+The BOOKMARK command creates a 'bookmark' file, which saves  your  place  in  a
+file. The next time you edit that file, ED will position you at the same record
+you were on when you last got out of the file.
+
+What actually happens when you say BOOKMARK is this:
+
+o  Suppose you're editing a file called  test.dat,  and  you're  on  the  fifth
+   record  in  the  file, on the eight byte. You issue the BOOKMARK command. ED
+   creates a file (in the same directory as the file itself)  called  test.dat-
+   EDbookmark,  and writes the 5,7 into it. (The 7 is the offset from the first
+   byte to the eight byte.)
+
+o  When you leave the file (whether by EXIT, QUIT, ABORT or by closing  a  win-
+   dow), ED updates the bookmark file with your current position in the file.
+
+o  The next time you  edit  test.dat,  ED  will  try  to  find  a  file  called
+   test.dat-EDbookmark.  If  it  finds  such  a  file,  and  if  it  contains a
+   "number,number" string on the first line, ED assumes it's  a  bookmark  file
+   and positions the cursor to the specified record and offset.
+
+To make ED stop doing this, delete the bookmark file.
+
+In general, it isn't a good idea to edit bookmarked files with  other  editors,
+since  this may make meaningless the position that is specified in the bookmark
+file.
+
+You can abbreviate the BOOKMARK command as BO.
+
+1 box_mode
+
+The SET BOX ON command puts ED in "box cut/paste" mode. In box  mode,  you  can
+cut rectangular areas out of your file, and paste them in elsewhere, preserving
+their rectangular shape. The idea is to make it easy to cut a table and move it
+somewhere else. Suppose you are looking at some text that looks like this:
+
+ Now is the time
+ For all good men
+ To come to the aid
+ Of their country.
+
+If you moved to the i in 'is', hit SELECT, moved to the u in 'country', and hit
+CUT, in normal cut mode the result would be:
+
+ Now untry.
+
+and the paste buffer would contain:
+
+ is the time
+ For all good men
+ To come to the aid
+ Of their co
+
+In normal cut mode, ED removes all characters from the beginning of the  select
+range  to  its end, including the "line breaks" that separate lines of the file
+from each other. In box mode, what gets  cut  is  always  a  rectangular  area,
+bounded  on  opposite corners by the cursor and the select marker. In the above
+case, the box cut result would be:
+
+ Now ime
+ For  men
+ To che aid
+ Of tntry.
+
+and the paste buffer would contain:
+
+ is the t
+ all good
+ ome to t
+ heir cou
+
+Thus in box mode, the number of lines in the file remains constant; only a sec-
+tion  of  each line in a group gets cut. When you paste in box mode, ED inserts
+the rectangular area you previously cut, starting at the  cursor  position,  by
+making  a  space  in the middle of each line, and inserting data from the paste
+buffer. This keeps the entire rectangle of data together.
+
+Box mode does not affect other kinds of deletion from  the  file:  DELC,  DELW,
+DELL,  deletion/replacement of search strings, and SUBST work in the normal way
+regardless of the box mode state. Only CUT and  APPEND  perform  the  box  mode
+operation, and only if you enable it.
+
+Note: when you use box cut and paste, ED converts all  TAB  characters  in  the
+affected  lines  to  spaces. Also, box mode doesn't work in any useful way when
+you are in binary or hex mode (using the -b and -h options when you invoke ED).
+Another  peculiarity: when you are in a diredit buffer, and box mode is on, and
+you SORT a select range, ED trims trailing spaces from the file names  involved
+in  the  sort. If one of the files actually had trailing spaces in its name, ED
+would not know this, and would trim them off.  From  that  point  forward,  you
+would  be  unable  to  visit  that  file,  because the trailing spaces would be
+absent.
+
+1 BIGGER
+
+The BIGGER command makes the window the cursor is  in  bigger.  The  syntax  is
+BIGGER lines, where lines is how many additional screen lines you want the win-
+dow to occupy. Other windows are made smaller to accommodate the new size.
+
+You can abbreviate the BIGGER command as BI.
+
+1 BYTE
+
+The BYTE command inserts a single byte into the current buffer. You specify the
+value  of  the character in the BYTE command itself: BYTE 32, for example would
+insert a space character (whose ASCII value is 32). BYTE is very similar to the
+SPECINS keypad command, except that you can use the results of a calculation to
+determine which value the inserted character has.
+
+You can abbreviate the BYTE command as BY.
+
+1 CALCULATE
+
+The CALCULATE command takes the entire line the cursor is on and  feeds  it  to
+the  calculator,  which  tries  to evaluate it as an arithmetic expression. The
+calculator puts the result of the calculation (or, possibly, an error  message)
+in the PASTE buffer.
+
+You can abbreviate the CALCULATE command as CA.
+
+2 expressions
+
+The calculator takes algebraic expressions as you would  see  them  in  a  math
+textbook.   For  example, 2+2. It recognizes '+' for addition, '-' for subtrac-
+tion, '*' for multiplication, '/' for division, and '^' for exponentiation. The
+order  of  evaluation  is left to right for everything. You may use parentheses
+freely.
+
+2 intrinsic_functions
+
+The calculator recognizes the following functions:
+
+ abs   absolute value                exp      exponential
+ sin   sine of angle(radians)        ln       naperian logarithm
+ sind  sine of angle(degrees)        log      decimal logarithm
+ cos   cosine of angle(radians)      sqrt     square root
+ cosd  cosine of angle(degrees)      fact     factorial
+ tan   tangent of angle(radians)     arcsin   arc sine(radians)
+ tand  tangent of angle(degrees)     arcsind  arc sine(degrees)
+ cot   cotangent of angle(radians)   arccos   arc cosine(radians)
+ cotd  cotangent of angle(degrees)   arccosd  arc cosine(degrees)
+ csc   cosecant of angle(radians)    arctan   arc tangent(radians)
+ cscd  cosecant of angle(degrees)    arctand  arc tangent(degrees)
+ sec   secant of angle(radians)      sinh     hyperbolic sine
+ secd  secant of angle(degrees)      cosh     hyperbolic sine
+ int   integer part of a number      tanh     hyperbolic tangent
+
+For example, to get the decimal logarithm of seven factorial, you  would  enter
+log(fact(7))  on  a line by itself, issue the CALCULATE command, and then PASTE
+the result into the file.
+
+2 limitations
+
+Some of the math functions place limitations on what numbers you can feed them.
+These limits are:
+
+o  tan, tand, sec, secd -- angle must not be 90 or 270 degrees.
+o  cot, cotd, csc, cscd -- angle must not be 0 or 180 degrees.
+o  exp, sinh, cosh -- absolute value of the number must be less than 88.7.
+o  arcsin, arcsind, arccos, arccosd -- number must be between -1 and 1.
+o  sqrt -- number must be nonnegative.
+o  ln, log -- number must be positive.
+o  fact -- number must be between zero and 33.99999.
+
+1 CD
+
+The CD command changes your current working directory. The command syntax is CD
+directory,  where  directory is where you want to go. The behavior of this com-
+mand depends to some extent on which kind of operating system you're using.  On
+some  systems,  when  you  CD within ED and then leave ED, the operating system
+puts you back where you were when you ran ED. Other systems leave you where you
+last CD'ed to.
+
+1 changing_case
+
+The CHGCAS key changes the case of either the select range (if it  is  active),
+the search string (if the cursor is sitting on it), or the character the cursor
+is on (if neither of the first two options apply).  The  default  behavior  for
+this key is the same as EDT's, but ED allows other options. You can use the SET
+CASE command to change the behavior of CHGCAS. See the help  on  SET  CASE  for
+more information.
+
+1 commands
+
+To get into command mode, do either GOLD [7] or press control-Z. You will get a
+Command>  prompt. Enter the command you want to use, and press RETURN or ENTER.
+If you go into command mode by mistake and you want to go on editing, just  hit
+RETURN  (an  empty  command is ignored). Note that as soon as ED finds a unique
+match on the command name you type in, it ignores any further characters in the
+command.
+
+The valid commands are:
+
+ HELP               BYTE
+ EXIT QUIT ABORT    TRIM
+ INCLUDE WRITE      CD PWD
+ SET SHOW           BIGGER SMALLER
+ STORE RESTORE      LOAD UNLOAD
+ DATE TIME FILE     SORT
+ CALCULATE          DELETE
+ GREP PERG          BOOKMARK
+                    SUBSTITUTE
+
+To get help on a particular command, respond to the Command> prompt with
+
+HELP command-name
+
+1 defining_keys
+
+Editing tasks tend to be repetitive, so most editors allow you  to  store  some
+sequence  of  editor  commands  "under" a key, so that when you want to do that
+sequence of operations, all you have to do is hit that  key.  This  storage  of
+commands is called "defining" the key. Some keys are so essential to the proper
+functioning of ED that they cannot be defined. The ones  that  can  be  defined
+are:
+
+o  Keypad keys (except for GOLD)
+o  Any GOLD-alpha combination (like GOLD-Q, for instance)
+o  Any control key other than ^K, ^Q, or ^S
+o  Any user function key (see help on 'terminals')
+o  Any alphanumeric key (see help on 'alpha_keys')
+
+To define a key, first hit control-K (press the K key while  holding  down  the
+Ctrl  key).  Then press the key you want to define (any of the above keys). Now
+you can edit your file as you usually do, but ED will record each keystroke you
+make.  When you get done defining the key, hit control-K again. That will store
+the keystroke sequence under the defined key. For the remainder of your editing
+session,  each time you press the key you defined, the entire sequence of keys-
+trokes you entered will be played out.
+
+2 alpha_keys
+
+Certain restrictions apply when  you  are  defining  main  keyboard  keys.  For
+example,  if  you were using a text processor and wanted to have a key like 'a'
+to come out as '^a/', ED might take the 'a' in the result string as  a  command
+to  put  the  whole  string out again. This kind of "recursion" would make life
+difficult, so some special rules apply when you are using defined  alphanumeric
+keys:
+
+o  alphanumeric defined keys are not recursive.
+
+o  alphanumeric keys do not evolve into their definitions they are used  within
+   another definition.
+
+o  alphanumeric keys do not evolve into their definitions when you type them in
+   response to any editor prompt. (You have to be able to communicate with ED!)
+
+2 saving_keys
+
+After you have defined some keys, you can save the definitions by entering com-
+mand  mode  and  responding to the Command> prompt by entering STORE KEYS. This
+will cause ED to create a new version of your editor startup  file,  and  store
+all  of  your  currently active key definitions in that file. ED will automati-
+cally retrieve these key definitions from this file whenever you start it up.
+
+2 restoring_keys
+
+If you have been messing around with your key  definitions,  and  you  want  to
+restore  them  to  their original values, enter command mode and respond to the
+Command> prompt by entering RESTORE KEYS. This will cause ED to  read  in  your
+standard  definitions  from your startup file and reset all the key definitions
+accordingly.
+
+2 undefining_keys
+
+To remove any definition from a key, hit control-K, press the key you  want  to
+remove  the definition from, and hit control-K again. This will make the key do
+whatever it ordinarily does.
+
+1 DELETE
+
+The DELETE command works only when you are editing a directory. In  this  mode,
+you can mark files for deletion by hitting DELLINE (or using the CUT command on
+a set of files). The marked files will appear in reverse video. Once  you  have
+marked  the  files you want to delete, you issue the DELETE command. ED deletes
+the marked files and redisplays the directory.
+
+1 DATE
+
+The DATE command loads the paste buffer with the current  date  in  the  format
+DD-MMM-YY, where DD is the day of month, MMM is the month, and YY is the year.
+
+You can use the single letter D as an abbreviation for DATE.
+
+1 environment_vars
+
+ED optionally uses two environment variables to specify the number of rows  and
+columns  on  the  screen  as defaults  if the  values on  the command  line are 
+specified as zero.  ROWS is an integer value containing the  number of lines on
+the screen, and COLS is an integer value containing the screen width.
+
+ED will also replace environment variables imbedded in file names (both in file
+prompts and in the user setup file) if they are preceeded by a $.  For example,
+a file specified as  $HOME/test.dat  on an ED internal prompt would be expanded
+the same way as the shell would expand it in unix.  The special substitution ~/
+at the start of a file name is translated to the  "HOME"  environment variable.
+If the string following a $ is not a valid environment variable no modification
+is made to the file name.
+
+Environment variable substitution is not available on VMS, and  does not handle
+~username type syntax on any systems.
+
+1 EXIT
+
+Creates a new version of the file you are currently editing, incorporating  all
+the changes you have made.
+
+If you are using the -k backup option, you can suppress creating the backup for
+this file using the -n option. For example, EXIT -n will not save the old file.
+This is  sometimes useful  if you  want to  save the  contents of  the previous
+backup file.
+
+You can use the single letter E as an abbreviation for EXIT.
+
+1 features
+
+ED will:
+
+o  Display many files on the screen simultaneously (see windows).
+o  Let you edit files and directories on other systems (see FTP).
+o  Save key definitions and other editor settings on command (see STORE).
+o  Let you mark your spot in a file, and return to it easily (see MARK).
+o  Let you put tab stops wherever you want them (see tabs).
+o  Let you use wildcards or regular expressions in search strings (see search).
+o  Let you redefine the keys on your terminal (see defining_keys).
+o  Let you say things like: ED *.dat, if you want to edit all .dat  files  (see
+   wildcards).
+o  Allow you to teach it how to talk to different terminals (see terminals).
+o  Calculate the value of algebraic expressions  that  include  math  functions
+   (see CALCULATE).
+o  Sort a file or a portion of a file (see SORT).
+
+1 FILE
+
+The FILE command loads all or part of a file name into the  paste  buffer.  The
+behavior of this command depends on whether you are in a diredit buffer or in a
+file. If you are in a diredit buffer, ED takes  the  name  of  the  buffer  and
+splices  the filename the cursor is on onto the end of it. If you're in a file,
+ED uses the file name.
+
+Once ED has built the file name as described above, it puts all or part of  the
+name into the paste buffer, according to the following plan:
+
+If you say FILE DIRECTORY, it puts only  the  directory  name  into  the  paste
+buffer.
+
+If you say FILE NAME, it strips off the directory and puts only the  file  name
+in the paste buffer.  Note that FILE by itself is the same as FILE NAME.
+
+If you say FILE FULL, it puts the entire name into the paste buffer.
+
+You can abbreviate the FILE command as F. You can abbreviate  DIRECTORY  as  D,
+NAME as N, and FULL as F.
+
+1 ftp
+
+ED is capable of manipulating files  on  other  systems,  using  the  FTP  file
+transfer  protocol. If you are connected to a network that supports TCP/IP, you
+can specify directories and files on other systems by using one  the  following
+syntaxes:
+
+/host.xxx.yyy:/dir1/dir2...
+
+or
+
+/user@host.xxx.yyy:/dir1/dir2...
+
+If you use the form that includes the username, ED  will  prompt  you  for  the
+password.  If  the filename you specify is a directory, you will go into direc-
+tory mode. Otherwise, the specified file will be retrieved using ASCII transfer
+mode, or BINARY mode if you specified -b when you named the file.
+
+If you leave the directory/filename off completely, the root directory for  FTP
+will  be  where you end up (in directory mode). This may not work on certain VM
+systems that require you to know a directory name.
+
+Note that FTP servers on non-Unix systems are not very  well  standardized.  If
+you  try  to  open a remote file or directory, and nothing happens for a while,
+wait a bit longer. You should eventually (perhaps after about one minute) get a
+timeout  message if the connection fails. You may get other messages, depending
+on the situation. In general, you should either connect to the host or get some
+kind of message.  If neither happens, write to sandmann@clio.rice.edu,  telling
+what kind of system you were running ED on, what kind of system you were trying
+to  connect  to, and what message(s) appeared on your terminal. (If you're on a
+Unix system, you may be able to use the 'script' command to capture this infor-
+mation.)
+
+There are FTP servers out there that are simply horrible and ED cannot help you
+much with them. ED currently understands about a dozen different server styles,
+but surely there are more out there. If ED is unable to get file permissions or
+modification  dates, it uses ????????? for the permissions and 2-Feb-1955 06:35
+for the modification date. (The ????????? does not necessarily mean you  cannot
+access the file. You just have to try it.)
+
+Note that you can interrupt the FTP transfer of a file (or a directory listing)
+by  typing ^C. The file (or directory listing) will still appear on the screen,
+but it won't be complete.
+
+When talking to FTP servers, ED classifies the remote machine into one  of  two
+groups,  which  have different syntaxes. Windows NT, MS-DOS, OS/2 and Unix sys-
+tems all look like unix systems, that is, filenames  look  like  /a/b/c...  All
+other  systems  (including  VMS,  VM  and  MTS)  look  like  VMS systems, where
+filenames look like DEVICE:[DIRECT.DIRECT1...]. You can't send a  VMS-emulating
+system  a  unix  filename  and  expect it to work. The easiest way to deal with
+remote systems when you don't know which kind they  are,  is  to  just  specify
+/hostname: (or /user@hostname:). This will put you in the default directory for
+the account you specify, and the top row of the window will display the  system
+type  in  parentheses.  It's  pretty  obvious,  once  some  filenames have been
+displayed, which kind of beast you're talking to.
+
+1 GREP
+
+The GREP command searches through an entire file, looking for a string that you
+supply.  It  produces  a  new  window that shows each appearance of the string,
+along with (optionally) indications of how many intervening lines did not  con-
+tain the string. The syntax is:
+
+GREP string
+
+You can control whether GREP displays intervening line counts by using the  SET
+GREP  command. See the help on SET GREP for more about this. You can abbreviate
+the GREP command as G. Note that there is a command that does the  opposite  of
+what GREP does, called PERG.
+
+1 HELP
+
+The HELP command makes  ED  provide  information  about  various  features  and
+issues.  The command works as follows:
+
+o  If you just type HELP, you get a list of topics, and it  waits  for  you  to
+   type in a topic name.
+
+o  When you type in a topic name, ED displays the  help  information,  and  may
+   print  a list of subtopics. You can select one of these by typing the subto-
+   pic name in.  At this point, you would be  "one  level  down"  in  the  HELP
+   hierarchy.  Hitting  RETURN  without  typing  any  topic moves you up in the
+   hierarchy.
+
+o  Hitting RETURN at the top level gets you out of HELP.
+
+o  You can specify a chain of topic names in a HELP command: HELP DEFI ALP, for
+   example,   would  get  you  in  the  subtopic  'alpha  keys'  of  the  topic
+   'defining_keys'.
+1 INCLUDE
+
+The INCLUDE command inserts an entire file at the current location in the  file
+you're  editing.  The command syntax is INCLUDE filename. Wildcards are allowed
+in the file name; the first matching file ED finds  is  the  one  it  includes.
+Default  extensions  (from  your startup file) will be applied if filename does
+not have an extension.
+
+You can use the single letter I as an abbreviation for INCLUDE.
+
+1 invoking_ed
+
+When you invoke ED, you must specify a number of parameters so it knows how  to
+talk  to  your  terminal,  where  to  get  your key definitions, and so on. The
+required parameters are, in order:
+
+   1  The terminal file name that is appropriate for your terminal.
+   2  The name of your personal startup file.
+   3  The number of lines on your terminal screen.
+   4  The number of columns on your terminal screen.
+   5  (Optionally) one of the options listed under the 'options' subtopic.
+   6  (Optionally) the name of the file you want to edit, or -ffilename,  where
+      filename is a file that contains a list of files you want to edit. If you
+      specify -f without a filename, a list of file names is read from standard
+      input  (which  lets  you do some pretty amazing things under systems that
+      support pipes).
+
+      If you don't provide a file-to-edit, ED will  prompt  you  for  one.  The
+      modifiers described above are ignored when you respond to prompts.
+
+The parameters must be separated by spaces. Ordinarily, there will be a  symbol
+or alias defined when you log in that takes care of the first four parameters.
+
+2 filenames
+
+If you start ED and don't supply a filename, it will prompt you for one as fol-
+lows:
+
+File>
+
+If you don't want to edit after all, hit RETURN to get out.
+
+You can enter more than  one  filename  at  once  if  you  like.  Separate  the
+filenames  with  spaces. If you want to edit a file whose name contains spaces,
+enclose the name in double  quotes  (e.g.:  "this is a filename").  To  put  an
+actual  double  quote  in the file name, use \". To put a backslash in the file
+name, use \\. For example, if the file's name were:
+
+this is a long spacey file name with "double quotes"
+
+you would name the file as:
+
+"this is a long spacey file name with \"double quotes\""
+
+You can precede a filename with -f and ED will treat that file  as  a  list  of
+filenames that you want it to edit in sequence.
+
+You can use wildcards in the filename if you wish. The implementation  of  this
+varies  from  system to system. On AIX systems, for example, there is a system-
+defined limit on the number of file names that can be expanded by the shell. In
+VMS,  however,  the  wildcards are handled within ED and there is no limit. See
+the help on 'wildcards' for a complete description of wildcard processing.
+
+When you are editing from a list, or from a wildcarded file name, you may  want
+to  stop the list or wildcard processing. To do this, see the help on the ABORT
+command.
+
+When the file name you specify is a directory file, ED goes  into  a  'diredit'
+mode. In this mode, ED displays a list of all the files in the directory, along
+with the size of each file (in bytes), its last-modification date and time, its
+permissions, and an indication of whether it is a directory (directories have a
+'d' character in the first column). You can move around in the file list in the
+usual  way  - as far as ED is concerned, it's just another buffer (with certain
+limitations, see below).
+
+To view a file, move the cursor to the line containing the file name, and press
+'a'  if  the  file  is ASCII, or 'b' if it is a binary file. This creates a new
+window with the file in it. If the file you hit 'a' or 'b' on is  a  directory,
+ED 'moves' to that directory and gives you a new file list. You can move up one
+level in the file system by hitting 'a' or 'b'  when  the  cursor  is  on  '..'
+(unix)  or  '[-]'  (VMS).  For  moving  around  directories,  'a'  and  'b' are
+equivalent; the distinction between them applies only  when  visiting  a  file.
+Note that you can use the RETURN key as a substitute for the 'a' key.
+
+Certain limitations apply to directory-mode buffers: you  can't  edit  them  by
+inserting  or  deleting characters, and you can't use the INCLUDE, WRITE, BYTE,
+TRIM or SUBSTITUTE commands. (You can, however, SORT them).
+
+If you are connected to the Internet, you can edit files on other systems  with
+ED. See the help topic FTP for more about this.
+
+2 options
+
+ -r or
+ -rfilename  specifies that ED should go into recovery mode,  in  which  editor
+             commands are taken from a journal file instead of the terminal. If
+             you leave off the filename, ED takes  commands  from  the  default
+             journal file, which is defined in your ED startup file.
+ -t or
+ -tfilename  same as -r, except that no terminal i/o is performed, and ED quits
+             when  it gets to the point where it would ask you for another file
+             to edit. This option is good  for  text  processing  applications,
+             where  you  are  using  a  journal  file  to  control some kind of
+             automatic text processing on a file.
+ -f or
+ -ffilename  makes ED treat the specified file as a list of names of  files  to
+             edit,  which ED opens one after another. If filename is not speci-
+             fied, ED reads file names from the standard input (on non-VMS sys-
+             tems).
+ -k or
+ -kdirname   makes ED keep a backup copy of any files it updates  on  disk.  If
+             you  use  just -k, the backup file is called whatever the file was
+             called, with the extension changed to ".BAK".  If  you  specify  a
+             directory  (e.g.:  -k~/trash) the old version of the file is moved
+             to that directory, and its name remains unchanged.
+
+ -sstring    lets you specify the current search string.
+
+ -pstring    lets you specify the contents of the paste buffer.
+
+ -lstring    lets you specify the contents of the line buffer.
+
+ -wstring    lets you specify the contents of the word buffer.
+
+ -cstring    lets you specify the contents of the char buffer.
+
+ -v          prints ED's version number and licensing information, then quits.
+
+ -u          makes ED display the cursor position constantly.
+
+ -b          makes ED go into 'binary' mode. Use this to edit binary files.
+
+ -h          makes ED go into 'hex' mode, which is  identical  to  binary  mode
+             except that all characters appear in <hex> format.
+
+ -1          prevents prompting for additional files (one pass mode).
+
+ -m          makes ED go into 'multiple-file' mode. When you use -m,  ED  tries
+             to  open all the files you specify at once, in multiple windows on
+             the screen. If there are more files than will fit on  the  screen,
+             it  opens as many as it can, and then opens more after you EXIT or
+             QUIT. You can break out of multiple-file mode by using  the  ABORT
+             command.
+
+ -innn       makes ED move the cursor to line nnn of the file  when  it  starts
+             up. Line 1 is the first line of the file.
+
+ -z          makes ED go into a special 'tutorial' mode, where you can teach it
+             about  your keyboard. In this mode, ED prompts you for the name of
+             an existing configuration file (use one that you think might  work
+             marginally  with your terminal) and then asks you to press all the
+             key combinations it understands, followed by the  RETURN  key.  It
+             then  creates  a new configuration file (which you name) that will
+             work with the particular keyboard you're using. We generally  keep
+             our  configuration files in the same directory where ED lives, but
+             that isn't necessary, since the configuration file is one  of  the
+             command-line arguments you specify when you run ED.
+
+1 keypad
+
+This is the arrangement of the keys on the keypad. The arrow  keys  (UP,  DOWN,
+RIGHT,  LEFT)  are  not shown, since they are pretty much self-explanatory, and
+they appear in all sorts of different places.
+
+ +-------+-------+-------+-------+
+ |       |WINDOW | FIND  | UNDL  | The upper entry on each key gives the
+ | [PF1] | [PF2] | [PF3] | [PF4] | function of that key if GOLD is pressed
+ | GOLD  | CLONE |FNDNXT | DELL  | immediately before the key is pressed. The
+ +-------+-------+-------+-------+ lower entry is the function if only the key
+ |COMMAND| FILL  |REPLACE| UNDW  | itself is pressed. The two-stroke sequence,
+ |  [7]  |  [8]  |  [9]  |  [-]  | GOLD-key, is treated as one keystroke by ED.
+ | PAGE  |SECTION|APPEND | DELW  |
+ +-------+-------+-------+-------+ Note that keyboards may vary. Sparcs, for
+ |BOTTOM |  TOP  | PASTE | UNDC  | example, have no [,] key, so that function
+ |  [4]  |  [5]  |  [6]  |  [,]  | appears under the [Pause] key, the [-] key
+ | FORW  | BACKW |  CUT  | DELC  | is the UNDL/DELL key, and the [+] key is
+ +-------+-------+-------+-------+ the UNDW/DELW key. Of course, you can cust-
+ |CHGCASE|DELEOL |SPECINS| SUBST | omize all this by creating your own terminal
+ |  [1]  |  [2]  |  [3]  |       | description file.
+ | WORD  |  EOL  | CHAR  |       |
+ +-------+-------+-------+[Enter]|
+ |   OPENLINE    | RESET |       |
+ |      [0]      |  [.]  |       |
+ |   NEXTLINE    |SELECT | ENTER |
+ +---------------+-------+-------+
+
+2 details
+
+This section contains detailed descriptions of  the  functions  of  the  keypad
+keys. In general, it is important to understand that each key has two functions
+built in. You get one function (the lower one in the diagram) if you just press
+the  key.  You get the other function if you press the GOLD key, and then press
+the key. So when we say something like "press SUBST," we mean 1) press the GOLD
+key, and 2) press the key at lower right on the keypad.
+
+It is also important to understand that many of the cursor movement  keys  have
+"forward"  and  "backward"  modes,  which  depend  on which "direction" you are
+going. The FORW and BACKW keys set this direction. So, to move forward  in  the
+file  one  word  at  a  time,  you  would first press FORW, and then press WORD
+repeatedly. The current direction also determines which way ED  goes  when  you
+initiate a search for a string of characters.
+
+3 UP
+
+Moves the cursor to the previous record in the file.
+
+3 DOWN
+
+Moves the cursor to the next record in the file.
+
+3 RIGHT
+
+Moves the cursor one character to the right. If the cursor is at the end  of  a
+record, it moves to the start of the next record in the file.
+
+3 LEFT
+
+Moves the cursor one character to the left. If the cursor is at the start of  a
+record, it moves to the end of the previous record in the file.
+
+3 NEXTLINE
+
+If the current direction is forward, moves the cursor to the beginning  of  the
+next  line.  If  backward, moves the cursor to the start of the current record,
+unless it is already there, in which case it moves to the start of the previous
+record.
+
+3 OPENLINE
+
+If the cursor is at the start of a record, creates a new, empty record.  Other-
+wise, splits the current record in two.
+
+3 WORD
+
+Moves to the next word in the current direction.  You  define  what  characters
+delimit words by using the SET WORD command.
+
+3 CHGCASE
+
+Changes the case of characters in one of three ways:
+
+   1  If a select range is defined, the characters in the range are changed.
+
+   2  Otherwise, if you are on the current search string, the case of the char-
+      acters in the string is changed.
+
+   3  Otherwise, the case of one character is changed, and the cursor moves one
+      character in the current direction.
+
+You can alter the way case-changing works by using the SET  CASE  command.  See
+the help on SET CASE for more info.
+
+3 EOL
+
+If the current direction is forward, moves the cursor to the end of the current
+record,  or  the  end  of  the  next  record if it is already at the end of the
+current record. If backward, moves to the end of the previous record.
+
+3 DELEOL
+
+Deletes from the cursor to the end of the current record. If the cursor  is  at
+the  end  of  the  current  record,  nothing happens. Note that DELEOL does not
+delete the line break itself, as DELL does. Any deleted characters  are  stored
+in the LINE buffer, and can be reinserted with the UNDL command.
+
+3 CHAR
+
+Moves one character in the current direction.
+
+3 SPECINS
+
+Inserts any eightbit character. For example, to insert a DEL  character,  press
+GOLD,  then  enter  127  using  the numeric keys on the main keyboard, then hit
+SPECINS.
+
+3 FORW
+
+Sets the current direction to forward.
+
+3 BOTTOM
+
+Moves to the end of the file.
+
+3 BACKW
+
+Sets the current direction to backward.
+
+3 TOP
+
+Moves to the beginning of the file.
+
+3 CUT
+
+If a select range is defined, deletes it. Otherwise, if the cursor  is  on  the
+search  string,  deletes  that.  The deleted characters are stored in the PASTE
+buffer, and can be reinserted using the PASTE command. This operation is  often
+called "killing," and PASTEing is called "unkilling."
+
+3 PASTE
+
+Inserts the contents of the PASTE buffer at the cursor position.  See  CUT  for
+more information.
+
+3 PAGE
+
+Moves to the beginning of the next or previous page, depending on  the  current
+direction.  Pages  are defined by means of a "page delimiter string," which you
+can control with the SET PAGE command.
+
+3 COMMAND
+
+Lets you enter editor commands. Try HELP to get started.
+
+3 SECTION
+
+Moves the cursor one "section" in the current direction. This is eighteen lines
+by default, and you can change it with the SET SECTION command.
+
+3 FILL
+
+Performs word fill on the select range. The right margin is controlled  by  the
+SET WRAP command.
+
+3 APPEND
+
+This command is like CUT, except that what gets killed is  appended  to  what's
+already in the PASTE buffer, rather than replacing it.
+
+3 REPLACE
+
+This command requires that the cursor be on the search string.  If  it  is,  it
+deletes  the search string and inserts the contents of the PASTE buffer at that
+spot. The SUBST command is similar, but it automatically takes you to the  next
+appearance of the search string.
+
+3 DELW
+
+Deletes from the cursor to the start of the next word in the file. The  deleted
+character  are  stored in the WORD buffer, and can be reinserted using the UNDW
+command.
+
+3 UNDW
+
+Inserts the contents of the WORD buffer at the cursor position.
+
+3 DELC
+
+Deletes one character at the cursor position, storing it in  the  CHAR  buffer.
+The character can be reinserted using the UNDC command.
+
+3 UNDC
+
+Inserts the contents of the CHAR buffer at the cursor position.
+
+3 SELECT
+
+Marks one end of the "select range," which is defined  as  all  the  characters
+between this mark and the cursor position. You use this to kill large blocks of
+text: 1) move somewhere and press SELECT, 2) move somewhere else, 3) press CUT.
+Everything  from  the  SELECT  spot  to the cursor is killed, and stored in the
+PASTE buffer. ED marks the SELECT position with a little reverse-video box.  If
+a  SELECT  spot  is  already  defined, and you press SELECT somewhere else, the
+first selection goes away. You don't have to use RESET, as you do with EDT.
+
+3 RESET
+
+Turns off the select range. Does nothing if you haven't SELECTed a spot.
+
+3 SUBST
+
+
+The SUBST key deletes the search string, replaces it with the contents  of  the
+paste buffer, and then searches for another occurrence of the search string. To
+use the SUBST key, enter the following commands:
+
+   1  Press FIND
+   2  Enter the text you want to replace.
+   3  Press FORW or BACKW, to set the  search  direction  and  find  the  first
+      occurrence of the string.
+   4  Press SELECT.
+   5  Type the text you want to replace the search string with.
+   6  Press CUT.
+   7  Press SUBST.
+
+Each time you press SUBST, ED will make a  substitution  and  locate  the  next
+occurrence  of  the search string. You can use a repeat count for multiple sub-
+stitutions.
+
+This command requires that the cursor be on the search  string.  Hitting  SUBST
+when you are not on the search string does nothing.
+
+3 CLONE
+
+Alters the behavior of any immediately following  kill-type  command,  so  that
+what  would  have  been  killed  remains  in the file, but the 'killed' area is
+copied to the appropriate kill buffer just as it normally is when you kill.
+
+3 WINDOW
+
+Puts you in window command mode. See the help on windows for more information.
+
+3 FNDNXT
+
+Finds the next appearance of the search string, seeking in the  current  direc-
+tion. Beeps if it is not found, otherwise moves the cursor there.
+
+3 FIND
+
+Initiates a search with a new search string. To  find  something,  do  a  FIND,
+enter  the  string, then press FORW to search forward, or BACKW to search back-
+ward.  You  can  recall  previously-typed  search  strings.  See  the  help  on
+recall_commands for some tips about this.
+
+3 DELL
+
+Deletes  from the  cursor to  the end  of the  current record,  and  splices the  
+following record onto the current record.  The deleted characters  are stored in
+the LINE buffer, and can be reinserted using the UNDL command.
+
+3 UNDL
+
+Inserts the contents of the LINE buffer at the cursor position.
+
+1 license
+
+ED is an enhanced EDT-like editor, Copyright (C) 1992 by Rush Record (author).
+Copyright (C) 1993 by Charles Sandmann (sandmann@clio.rice.edu) maintainer.
+
+ED is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation.
+
+ED is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License (COPYING)
+along with this program; if not, write to:
+The Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+If you did not receive a copy of the source code and would like a copy, or
+have questions or comments please email or write to:
+   Charles Sandmann (sandmann@clio.rice.edu)
+   527 Asheboro
+   Katy, TX  77450
+1 LOAD
+
+The LOAD command loads key definitions from  an  unload  file,  which  you  can
+create using the UNLOAD command. The ordinary sequence of operations is: 1) you
+use the UNLOAD command to create a listing of your key definitions, 2) you edit
+that  file  as  you  see  fit,  and 3) you use the LOAD command to load the key
+definitions from that file. You would then ordinarily STORE KEYS  to  make  the
+changes permanent (after you tested the defined keys, of course).
+
+The syntax of the command is LOAD filename, where filename is the name  of  the
+file containing the key definition listing.
+
+You can abbreviate the LOAD command as L.
+
+1 mark
+
+The MARK and RETURN keys allow you to mark your place in a file and then return
+to it after you've been doing things elsewhere.
+
+When you hit MARK, your current cursor position is stored. If you go  somewhere
+else  in  your  file,  then  hit RETURN (the special 'RETURN' key, not carriage
+return), you will move back to the last spot you marked. If you are on a marked
+spot,  and  hit MARK, that spot will be un-marked. If you have marked more than
+one spot, and you hit RETURN repeatedly, you will cycle among the marked spots.
+
+On some terminals, these functions are defined as follows: MARK is  GOLD  <down
+arrow>,  RETURN  is  GOLD <up arrow>. On the sparc, however, MARK is the 'Stop'
+key, and RETURN is the 'Again' key.
+
+You can have up to eight spots marked at any time.
+
+1 newsreader
+
+ED has a built-in network newsreader facility, which is enabled by  running  ED
+in one of the following ways:
+
+ED -n <news-server-hostname>
+ED -N <news-server-hostname>
+
+If you use -n, ED will display only those newsgroups you are subscribed to  (as
+indicated  in your .newsrc file). If you use -N, ED displays all the newsgroups
+your server knows about, signifying the unsubscribed groups by displaying  them
+in reverse video.
+
+I have tried to keep the user interface simple; except for  Posting,  you  need
+only  know  two  commands: 'read' (by typing 'r' or 'R') and 'visit' (by typing
+'v' or 'V') The difference between read and visit is the read displays a  group
+or article, but leaves the cursor where it was. Visit, on the other hand, moves
+the cursor to the just-created window.
+
+The following topics describe the newsreader's user interface.
+
+2 group_window
+
+When you invoke the ED newsreader, it displays newsgroups in  what  we'll  call
+the  'group  window'.  This  window is much like a diredit window, in that only
+certain keys have any valid function. All the cursor movement keys function  in
+the  normal  way.  FIND and FINDNXT also work as you would expect. Inserting or
+deleting text, however, is not allowed. As with diredit mode, DELLINE and  KILL
+will mark a group or set of groups in reverse video. Normal video means you are
+subscribed to a group, reverse means unsubscribed. Reapplying DELLINE  or  KILL
+will turn reversed groups into normal ones.
+
+To select a group, press 'r', 'R', 'v' or 'V'. This will make  ED  display  the
+articles  of  that  group  in  another window, called the 'article window'.  If
+there are more than 50 articles in the group, ED will ask you how many you want
+it  to list in the article window. If you just hit RETURN here, ED reads all of
+them. If you enter a number, say N, ED reads the first N articles. If you enter
+a  range  of  numbers, say N-P, ED skips the first N-1 articles, and then reads
+the next P-N+1 articles.
+
+The 'r' and 'R' commands leave the cursor in the group window after the article
+list has been displayed. 'v' and 'V' automatically move the cursor to the start
+of the article list.
+
+If you use an uppercase command ('R' or 'V') to call up the article window,  ED
+displays  all  of the articles in the group, even the ones you've already read.
+In this case, the already-read articles are indicated in reverse video. If  you
+use lowercase, only the unread articles are displayed.
+
+See the help topic 'article_window' for a description  of  the  article  window
+interface.
+
+2 article_window
+
+Article windows have a columnar display. The first  column  shows  the  article
+number.  The  second  lists the name of the person who posted the article.  The
+third column shows the posting date. The fourth column indicates how many lines
+of  text  there are in the body of the article. The fifth column shows the sub-
+ject of the article. The subject text may be preceeded by a number of '=' char-
+acters,  which  signify  that the article is a response to another article. One
+'=' means it is a response to a top-level article. Two '='s mean a response  to
+a response to a top-level article, and so on.
+
+The key functions for the article window are the same as for the group  window,
+except  that there is a 'p' command (for posting an article).  To read an arti-
+cle, move the cursor to it and press 'r', 'R', 'v' or  'V'.   The  behavior  is
+much  like  the  group  window's interface: 'r' and 'R' call up the article but
+leave the cursor where it was. 'v' and 'V' move the cursor into the article.
+
+The uppercase commands ('R' and 'V') cause ED to display the  article's  header
+information. The lowercase commands ('r' and 'v') leave the header off.
+
+When you select an article, ED creates a new window and displays the article in
+it.  This window is a regular ED window, like what you get when you edit a text
+file. All the keys function normally here.
+
+Every time you read an article, ED changes the line in the  article  window  to
+reverse  video so you don't have to read it in the future. If you read the same
+article again, ED returns the line in the article window to normal,  which,  in
+effect,  marks the article as unread again. You can also use DELLINE to reverse
+or un-reverse a line. You can use KILL to do the same to a range of articles.
+
+2 posting
+
+You post articles by typing 'p' when the cursor is in the article list. If  the
+cursor  is  on  an  article, your posting will be treated as a followup to that
+article; If it is on <end>, it will be a new posting.
+
+When you type 'p', a new window will appear, with header information,  and  (if
+it's a followup) a copy of the article the cursor was on, indented with "> " on
+each line. You can freely edit anything below the  header  (you  can  edit  the
+header, if you know how to do it without breaking anything). When you get done,
+type control-Z and enter EXIT if you want to go ahead and post, or QUIT if  you
+want  to just skip it. These commands won't pop you out of ED, they only affect
+whether the article is actually posted.
+
+2 EXIT_vs._QUIT
+
+When you get done reading the news, you must use the EXIT command if  you  want
+to  save a new .newsrc file (indicating changes in group subscription, or arti-
+cle read/unread state). If you QUIT, your .newsrc remains unchanged.
+
+1 PERG
+
+The PERG command searches through an entire file, looking for a string that you
+supply. It produces a new window that shows each line that does not contain the
+string, along with (optionally) indications of how many intervening  lines  did
+contain the string. The syntax is:
+
+PERG string
+
+You can control whether PERG displays intervening line counts by using the  SET
+GREP  command. See the help on SET GREP for more about this. You can abbreviate
+the PERG command as PE. Note that there is a command that does the opposite  of
+what PERG does, called GREP.
+
+1 prompts
+
+When you do certain things, ED responds by prompting you for input.  For  exam-
+ple,  when you type ^Z, a "Command>" prompt appears. When you are responding to
+such a prompt, you have a number of types of editing you  can  perform.  First,
+you  can  recall  previously-entered  strings by pressing the up and down arrow
+keys. See the help topic 'recall_commands' for more about this.  You  can  also
+use  the  right  and  left  arrow  keys  to move about within characters you've
+entered. You can pop the contents of the CHAR, WORD and LINE buffers  into  the
+string,  and  you  can delete using the DELC, DELW and DELL command keys. About
+the only kind of editing you can't do on the prompt line  is  APPEND  and  SET-
+COPY.
+
+1 PWD
+
+The PWD command makes ED print the name of the current working  directory.  You
+can change the current working directory from within ED using the CD command.
+
+You can abbreviate the PWD command as PW.
+
+1 QUIT
+
+Leaves the file you're editing the way it was. Throws away any  edits  you  may
+have made to the file.
+
+You can use the single letter Q as an abbreviation for QUIT.
+
+1 recall_commands
+
+Every time ED prompts you for some input, it stores what you type in.  You  can
+recall these text strings by using the up- and down-arrow keys, just as you can
+recall commands you give to DCL under VMS, or certain intelligent shells  under
+unix.  ED,  however,  maintains  a  separate recallable list for each different
+prompt. For example, if you are at the Search for> prompt, hitting the up-arrow
+key  will  call up the last thing you entered at that particular prompt.  Simi-
+larly, you can recall any file name you have entered in response to  the  File>
+prompt, without having to slog through search strings and the like.
+
+The lists of remembered strings are circular; when you get  to  the  end  of  a
+list,  it  starts  you over at the beginning again. The down-arrow key lets you
+move in the opposite direction through the list.
+
+1 recovery
+
+In a recovery operation, ED takes its orders from a  journal  file  instead  of
+from your terminal. This feature serves two purposes:
+
+   1  It allows you to recover your  work  if  your  process  (or  the  system)
+      crashes in the middle of an editing session.
+
+   2  It allows you to create journal files that can be used as text file  pro-
+      cessors.
+
+There are two ways to get into recovery mode: one (-r) displays edits  on  your
+screen,  the  other  (-t) does no terminal i/o, and terminates ED when it would
+ordinarily prompt you for another file-to-edit. The latter makes it possible to
+do text processing efficently.
+
+2 crash
+
+When your process (or the system) crashes right in the  middle  of  an  editing
+session,  you  can  recover  your  lost  work  by issuing the following command
+(assuming that 'e' is how you ordinarily invoke ED):
+
+$ e -r
+
+ED will replay all your edits on the file. This may take some  time,  depending
+on  how long you were in the file before the crash occurred. Once all the edits
+have been replayed, the file will be displayed at the point you were at when it
+crashed.  The  last few keystrokes you made before the crash may not appear; if
+so, you will have to reenter them. It isn't necessary to EXIT or otherwise save
+your  file at this point: even if another crash occurs, you can re-recover your
+work any number of times.
+
+2 text_processing
+
+The standard example of editor-controlled text processing is  global  substitu-
+tion.  Suppose you want to change all instances of one string to another string
+in a set of text files. You might set this up as follows:
+
+   1  You edit a scratch file, specifying some random strings  for  the  search
+      and paste buffers on the command line:
+
+      $ e -sabc -pxyz scratchfile
+
+   2  When ED comes up, you first FNDNXT forward, then issue  a  SUBST  command
+      with  a  huge  repeat  count.  It doesn't matter if it beeps when you say
+      FNDNXT, and it doesn't matter if no substitutions  actually  take  place.
+      Just pretend everything worked.
+
+   3  Next, you get out of ED. You have just created a journal file  that  does
+      the basics of a global substitution.
+
+   4  You copy the created journal file (whose name is on  the  first  line  of
+      your editor startup file) to a safe place, say, globsub.jou.
+
+   5  You can now issue a command to make ED perform global substitutions:
+
+      $ e -sfrom_string -pto_string -tglobsub.jou filename
+
+      The -s option lets you specify the search string, and the -p option  lets
+      you  load the paste buffer with the replacement string. This command glo-
+      bally substitutes a string in whatever files you specify.
+
+1 repeats
+
+You can tell ED to perform any function repeatedly by using repeat counts.  You
+enter  repeat counts by pressing the GOLD key, entering the number of times you
+want an operation repeated, and then pressing a key. (You must use  the  number
+keys  on  the  main  keyboard  to  enter  the repeat count, not the ones on the
+keypad.) Suppose, for example, you wanted to insert 53 'a'  characters  in  the
+file.  You  would  first  press  GOLD, then enter 53, then press a. You can use
+repeat counts on any editor operation, even defined keys.
+
+If you use a repeat count greater than nineteen on a defined key, ED shuts  off
+the  display  while  it  executes  the  operation, then completely repaints the
+screen once it is done.
+
+1 RESTORE
+
+Use the RESTORE command to restore key definitions and/or editor  settings  the
+you  have  modified during an editing session. For example, if you had used the
+SET SEARCH command to alter your search settings from what  you  normally  use,
+you  could  RESTORE  SEARCH  to  return  the  search parameters to their normal
+values.
+
+The values to which the various settings are restored are those stored in  your
+startup file, which is named on the command line when you invoke ED.
+
+The format of the RESTORE command is RESTORE item. If you just say RESTORE, all
+items will be restored.
+
+You can abbreviate the RESTORE command as R.
+
+2 AUTO_TABS
+
+The RESTORE AUTO_TABS command will return the setting of the  AUTO_TABS  switch
+to the value it had when you last stored it. See help on SET AUTO_TABS for more
+information about auto tabs.
+
+You can abbreviate the RESTORE AUTO_TABS as command R AU.
+
+2 AWRAP
+
+The RESTORE AWRAP command will return the setting of the AWRAP  switch  to  the
+value  it  had when you last stored it. See help on SET AWRAP for more informa-
+tion about autowrapping.
+
+You can abbreviate the RESTORE AWRAP as command R AW.
+
+2 BOX
+
+The RESTORE BOX command will return the setting of the box mode switch  to  the
+value  it had when you last stored it. See help on "box_mode" for more informa-
+tion about box mode.
+
+You can abbreviate the RESTORE BOX as command R B.
+
+2 CASE
+
+The RESTORE CASE command will return the setting of the  case-change  value  to
+the  value  it  had when you last stored it.  See the help on SET CASE for more
+complete information about this value.
+
+You can abbreviate this command as R CA.
+
+2 CFRIENDLY
+
+The RESTORE CFRIENDLY command will return the setting of the  CFRIENDLY  switch
+to the value it had when you last stored it. See help on SET CFRIENDLY for more
+information about C-friendly mode.
+
+You can abbreviate the RESTORE CFRIENDLY as command R CF.
+
+2 CLOSE_PARENS
+
+The RESTORE CLOSE_PARENS command will return the setting  of  the  CLOSE_PARENS
+switch  to  the  value  it  had  when  you  last  stored  it.  See  help on SET
+CLOSE_PARENS for more information about parenthesis matching.
+
+You can abbreviate the RESTORE CLOSE_PARENS command as R CL.
+
+2 DEFAULTS
+
+The RESTORE DEFAULTS command will return the default file extension list to the
+value  it had when you last stored it. See help on SET DEFAULTS for more infor-
+mation about default extensions.
+
+You can abbreviate the RESTORE DEFAULTS command as R D.
+
+2 GREP
+
+The RESTORE GREP command will restore the setting of the GREPMODE switch to the
+value it had when you last stored it. See help on SET GREP for more information
+about GREP modes.
+
+You can abbreviate the RESTORE GREP command as R G.
+
+2 KEYS
+
+The RESTORE KEYS command will return all  your  defined  keys  to  their  saved
+definitions.  If  you have defined any new keys before you use the RESTORE KEYS
+command, those keys will become undefined.
+
+You can abbreviate the RESTORE KEYS command as R K.
+
+2 OVERSTRIKE
+
+The RESTORE OVERSTRIKE command will  restore  the  setting  of  the  OVERSTRIKE
+switch  to the value it had when you last stored it. See help on SET OVERSTRIKE
+for more information about overstrike mode.
+
+You can abbreviate the RESTORE OVERSTRIKE command as R O.
+
+2 PAGE
+
+The RESTORE PAGE command will restore the value of the page delimiter string to
+what it was when you last stored it.
+
+You can abbreviate the RESTORE PAGE command as R PAG.
+
+2 PARAGRAPH
+
+The RESTORE PARAGRAPH command will restore the value of the paragraph delimiter
+string to what it was when you last stored it.
+
+You can abbreviate the RESTORE PARAGRAPH command as R PARA.
+
+2 PARENTHESES
+
+The RESTORE PARENTHESES command will make ED restore the list of parentheses to
+the  value  it had the last time you stored it. See help on SET PARENTHESES for
+more information.
+
+You can abbreviate this command as R PARE.
+
+2 SEARCH
+
+The RESTORE SEARCH command will return your search  parameters  to  the  values
+they had when you last stored them.
+
+You can abbreviate the RESTORE SEARCH command as R SEA.
+
+2 SECTION
+
+The RESTORE SECTION command will return the number of lines in a section to the
+value it had when you last stored it.
+
+You can abbreviate the RESTORE SECTION command as R SEC.
+
+2 SHELL
+
+The RESTORE SHELL command will return the shell string to the value it had when
+you last stored it.
+
+You can abbreviate the RESTORE SHELL command as R SH.
+
+2 STABLE The RESTORE STABLE command will return the name of your current search
+table  to  the  value  it had when you last stored it. See help on "search" for
+more information about search tables.
+
+You can abbreviate the RESTORE STABLE command as R ST.
+
+2 TABS
+
+The RESTORE TABS command will return your tab settings to the values  they  had
+when you last stored them.
+
+You can abbreviate the RESTORE TABS command as R T.
+
+2 WILDCARD
+
+The RESTORE WILDCARD command will return your WILDCARD character to  the  value
+it had when you last stored it.
+
+You can abbreviate the RESTORE WILDCARD command as R WI.
+
+2 WORD
+
+The RESTORE WORD command will restore the values of the word delimiters to what
+they were when you last stored them.
+
+You can abbreviate the RESTORE WORD command as R WO.
+
+2 WRAP
+
+The RESTORE WRAP command will return the wrap margin to the value it  had  when
+you last stored it.
+
+You can abbreviate the RESTORE WRAP command as R WR.
+
+1 search
+
+Searching for a text string in ED works much the same way it does in EDT,  with
+a few extensions. In addition to the EDT-like search settings:
+
+o  General/Exact - controls case-sensitivity.
+o  Beginning/End - where the cursor ends up.
+
+ED includes four additional settings:
+
+o  Wild/Nowild - controls whether search wildcards are enabled.
+o  Table/Notable - controls whether a search table is used.
+o  Regex/Noregex - controls whether regular expressions are used.
+o  Char/Word - controls whether 'word mode' is used.
+
+See the help on SET SEARCH for more information about setting the search flags.
+
+2 binary_mode
+
+If the buffer you're searching in was opened  in  binary  mode,  ED  completely
+ignores  the  line  breaks in your file, and just treats it as an uninterrupted
+sequence of bytes. This means that you can search for carriage  return  charac-
+ters (ASCII 13), which is impossible in ascii mode.
+
+Binary-buffer searches ignore the WORD and REGEX search flags.  You  can,  how-
+ever,  use  the  GENERAL/EXACT, WILD/NOWILD and TABLE/NOTABLE settings with the
+usual effect.
+
+2 wildcards
+
+There is a search setting (SET SEARCH [NO]WILD) that allows you to use  a  spe-
+cial  character  you  specify  as a match-all character within a search string.
+When your search string contains wildcards, ED ignores the correspond character
+in the file.
+
+You set the value of the wildcard character using the SET WILDCARD command.
+
+When you use wildcards, make sure they are embedded within the  search  string.
+Wildcards  on  either  end  of the search string are unnecessary and won't work
+properly.
+
+2 tables
+
+There is a search setting (SET SEARCH [NO]TABLE) that  allows  you  to  use  an
+external  "translation  table"  to  modify  the  way your search proceeds. When
+search is set to NOTABLE, the search works the way EDT's search does, that  is,
+SET SEARCH GENERAL/EXACT takes precedence. When search is set TABLE, the search
+routine uses the current search table (see help on  SET  STABLE)  to  translate
+every  character in your file before it compares it to your search string. This
+lets you do searches for for things like ##.##, where # represents any  numeric
+character.
+
+You can use ED to create search tables; they are just text files that contain a
+pair of characters on each line. Here is an example:
+
+                           0#
+                           1#
+                           2#
+                           3#
+                           4#
+                           5#
+                           6#
+                           7#
+                           8#
+                           9#
+                           +m
+                           -m
+                           /m
+                           *m
+                           =m
+
+Each line of the search table file should have only two characters.  The  first
+character  can  be  anything, the second character is the character you want to
+use in your search string to match the first one. There should not be any blank
+lines  in  the  file.  The  above example table lets you use the # character to
+match any digit, and the m character to match mathematical operators.
+
+Once you create a search table, you should use the SET STABLE command  to  tell
+ED which table to use, and then say SET SEARCH TABLE to enable the table-driven
+search mode.
+
+2 buffers
+
+The PASTE, LINE, WORD and CHAR buffers are always available to you,  even  when
+ED if prompting you for information. For example, when you enter a FIND command
+(GOLD PF3), ED prompts you for a search string. You can, at this point,  either
+type  the  string  in,  or use any of the keypad keys that unkill to add to the
+search string. Suppose you had just killed the word 'xyz ' and  you  wanted  to
+search  for  it.  You  would first enter FIND, then UNDW ('xyz ' appears in the
+search string) and then FORW or BACKW to set the search direction.
+
+This can be a very useful feature when combined with defined keys. You can pro-
+gram a key that grabs a subroutine name and automatically opens the source file
+for that routine, for example.
+
+2 regular_expressions
+
+You should look at whatever unix documentation  is  available  for  a  complete
+description  of regular expressions. We include here a brief description of the
+most common features:
+
+   1  In a regular expression, the character . matches any single character.
+   2  A list of characters in square brackets matches any single character from
+      the list. For example, [abc] would match 'a', 'b' or 'c'. You can use a -
+      to indicate a range of characters:  [a-z]  matches  all  lowercase  alpha
+      characters.
+   3  Any other character must exactly match.
+
+These are an extreme simplification of the rules, but they  may  help  get  you
+started.  Note that enabling regular expressions overrides the WILD/NOWILD set-
+ting.
+
+2 word_mode
+
+The idea of word mode is that you can search for a set of  words,  without  any
+restriction  on  the number of word delimiters that separate them. For example,
+suppose the file contains:
+
+This the first line,
+and this is the second line.
+
+In word mode, you could search for "line and" and ED would find  it,  since  it
+ignores  the  ',' and the line break (assuming that ',' appears in your list of
+word delimiters).
+
+You can combine word mode and REGEX mode to search for a sequence of words that
+match  a  sequence  of  regular expressions. This works as follows: your search
+string is first broken up into a sequence of regular expressions. These must be
+separated  by  spaces  (if  you  want  to use a space within one of the regular
+expressions, use [:space:]). Now ED scans the file for  words,  comparing  each
+word to one of these regular expressions. A match is found when all of the reg-
+ular expressions match their corresponding words.
+
+1 SET
+
+The SET command allows you set certain editor parameters.
+
+You can abbreviate the SET command as SE.
+
+2 AUTO_TABS
+
+The  SET AUTO_TABS  command controls whether  tabs and spaces are automatically
+generated  when  you  hit a RETURN in a file. If you say SET AUTO_TABS ON, then
+whenever you hit RETURN in the file, ED checks the previous  line,  and  if  it
+begins with one or more whitespace characters,  ED  inserts the same whitespace 
+just to the left of the cursor.  To turn auto tabs off,  say  SET AUTO_TABS OFF.
+To change it from off to on or vice-versa, say SET AUTO_TABS TOGGLE.
+
+You can abbreviate the SET AUTO_TABS as command SE AU.
+
+2 AWRAP
+
+Use the SET AWRAP command to control whether ED  'autowraps'  your  text  entry
+when  the length of a line exceeds the 'wrap margin' (see SET WRAP). If you say
+SET AWRAP ON, then whenever you type characters and the cursor goes beyond  the
+wrap  margin, ED inserts a carriage return. To turn autowrap off, say SET AWRAP
+OFF. To change it from off to on or vice-versa, say SET AWRAP TOGGLE.
+
+You can abbreviate the SET AWRAP as command SE AW.
+
+2 BOX
+
+The SET BOX command puts ED  in  "box  cut/paste"  mode.  See  the  help  topic
+"box_mode" for a description of box mode.
+
+To get into box mode, say SET BOX ON. To return to normal  mode,  say  SET  BOX
+OFF.  To change it from off to on or vice-versa, say SET BOX TOGGLE.
+
+You can abbreviate the SET BOX command as SE B.
+
+2 CASE
+
+Use the SET CASE command to control the effect of the  CHGCAS  key.  There  are
+four possible settings for CASE:
+
+Upper        This setting causes the CHGCAS key to set the  affected  range  to
+             upper case.
+Lower        This setting causes the CHGCAS key to set the  affected  range  to
+             lower case.
+Opposite     This setting causes the CHGCAS key to change upper  to  lower  and
+             vice-versa.
+Capitalize   This setting causes the CHGCAS key to capitalize each word in  the
+             range.
+
+You can abbreviate the SET CASE command as SE CA.
+
+2 CFRIENDLY
+
+Use the SET CFRIENDLY command to control whether ED automatically formats  your
+file  whenever  you type a } character. If you say SET CFRIENDLY ON, then when-
+ever you type }, ED finds the matching { character, and inserts  a  line  break
+and the same whitespace  as found on the line with the  {  to align the  }.  To 
+turn this mode off, say  SET CFRIENDLY OFF.  To  change  it  from  off to on or 
+vice-versa, say SET CFRIENDLY TOGGLE.
+
+You can abbreviate the SET CFRIENDLY command as SE CF.
+
+2 CLOSE_PARENS
+
+Use the SET CLOSE_PARENS command  to  control  whether  ED  shows  you  closing
+parentheses.  If  you say SET CLOSE_PARENS ON, and you type an open parenthesis
+or a close parenthesis, your cursor will briefly jump to the  matching  closing
+or  opening  parenthesis. To turn the feature off, say SET CLOSE_PARENS OFF. To
+change it from off to on or vice-versa, say SET CLOSE_PARENS TOGGLE.
+
+Actually, you have to specify which kinds of parentheses you want the editor to
+match with each other. See help on SET PARENTHESES for more information.
+
+You can abbreviate the SET CLOSE_PARENS command as SE CL.
+
+2 DEFAULTS
+
+Use the SET DEFAULTS command to set your list of default  extensions.  Whenever
+you  give  ED  a  file name to edit or include, it first tries to open the file
+name as given. If it can't find the  file,  it  tries  appending  your  default
+extensions,  one  at  a  time,  checking  each new file name to see if the file
+exists. If it finds a file, it assumes you meant that  one  and  proceeds  nor-
+mally.  If it doesn't find any existing file, it opens an empty buffer and uses
+the name you gave at first as the name for that buffer.
+
+The effect of this is that you don't have to always be typing file  extensions.
+Usually ED will open the file you wanted, given only its first name.
+
+The syntax is SET DEFAULTS ext1 ext2 ext3... You can have any number of  exten-
+sions. Don't include the . in the extensions, ED will provide that for you.
+
+You can abbreviate the SET DEFAULTS command as SE D.
+
+2 GREP
+
+Use the SET grep command to control whether GREP displays include an indication
+of how many lines intervene between match lines. There are two GREP modes: VER-
+BOSE and SILENT. In verbose mode, ED reports the  intervening  lines,  whil  in
+silent mode, it doesn't. The mode applies in the same way to displays generated
+by the PERG command.
+
+You can abbreviate the SET GREP command as SE G.
+
+2 OVERSTRIKE
+
+Use the SET OVERSTRIKE command to control whether ED is in 'insert'  or  'over-
+strike'  mode.  In  insert mode (the default), characters you type are inserted
+into file records, shifting things over to make room for the  inserted  charac-
+ters.  In overstrike mode, characters you type overlay the existing characters.
+To turn this mode on, say  SET OVERSTRIKE ON.  To turn this mode off,  say  SET 
+OVERSTRIKE OFF.  To change it from off to on or vice-versa, say  SET OVERSTRIKE
+TOGGLE.
+
+You can abbreviate the SET OVERSTRIKE command as SE O.
+
+2 PAGE
+
+Use the SET PAGE command to set the page delimiter string.  When  you  use  the
+PAGE  command,  ED  will search for this string, position it on THE top line of
+the current window, and move the cursor to the end  of  the  page  string.  The
+default  page string is control-L (the form-feed character). To change the page
+delimiter string, hit control-Z to get the command prompt, and enter SE PAG. ED
+will  prompt  you  for  the  page delimiter string. You can enter up to sixteen
+characters. Terminate the entry by pressing ENTER.
+
+2 PARAGRAPH
+
+Use the SET PARAGRAPH command to  set  the  paragraph  delimiter  string.  This
+string  is  used  by the FILL command to decide where paragraphs start and end.
+FILL will perform word fill within a paragraph, but will  not  disturb  strings
+that  match  the delimiter string or characters on either side of such strings.
+The default paragraph delimiter string  is  two  carriage  returns  in  a  row.
+Another  useful  paragraph delimiter string is the tab character, especially if
+your text is heavily indented with tabs.  To  change  the  paragraph  delimiter
+string,  hit  control-Z  to  get the command prompt, and enter SE PARA. ED will
+prompt you for the paragraph delimiter string. You  can  enter  up  to  sixteen
+characters. Terminate the entry by pressing ENTER.
+
+2 PARENTHESES
+
+Use the SET PARENTHESES command to set the parenthesis list. ED uses this  list
+to  decide  what  characters  to  match with each other when CLOSE_PARENS is in
+effect.
+
+The parenthesis list is a set of up to sixteen pairs of characters.  The  first
+character  in  each pair is called the OPEN character; the second is called the
+CLOSE character. When CLOSE_PARENS is in effect, ED looks at each character you
+insert  to see if it is in the parenthesis list. If it appears as an OPEN char-
+acter, ED searches forwards from the cursor position, looking for the  matching
+CLOSE  character in your file. If it finds a match, it moves the cursor to that
+character for a moment so you can see which character matched. If the character
+you  insert  is  a  CLOSE  character,  ED searches backwards in your file for a
+matching OPEN characters, and does the same maneuver with the cursor.
+
+If the OPEN and CLOSE characters of a pair are the same, ED  just  scans  back-
+wards for the first occurrence of the character.
+
+To change the parenthesis list, hit control-Z to get the  command  prompt,  and
+enter SE PARE. ED will prompt you for the parenthesis list. You can enter up to
+sixteen pairs of characters. Terminate the entry by pressing ENTER. Remember to
+enter PAIRS of characters. A typical parenthesis list might look like (){}[].
+
+2 SEARCH
+
+Use the SET SEARCH command to change the way ED searches for strings  when  you
+use  the  FNDNXT key. There are six independent search parameters, and each one
+has two possible settings.
+
+The default search settings are:
+
+GENERAL,BEGINNING,NOWILD,NOTABLE,NOREGEX,CHAR.
+
+You can abbreviate the SET SEARCH command as SE SEA.
+
+3 GENERAL/EXACT
+
+If search is set GENERAL, ED ignores whether letters are upper  or  lower  case
+when  it searches. If set EXACT, the match must be exact, including the case of
+the letters.
+
+GENERAL may be abbreviated as G, EXACT as EX.
+
+3 BEGINNING/END
+
+Determines whether ED leaves the cursor at the beginning or end of  the  search
+string, once it finds it.
+
+BEGINNING may be abbreviated as BE, END as EN.
+
+3 NOWILD/WILD
+
+If set WILD, embedded any appearance of the WILDCARD character  in  the  search
+string  will be treated as a match-all, that is, any character will be a match.
+If set NOWILD, WILDCARD characaters in the search string  must  be  matched  by
+WILDCARD  characters in the file. Wildcards should not be used at the beginning
+or end of the search string. They are unnecessary there.
+
+You can set the WILDCARD value using the SET WILDCARD command.
+
+NOWILD may be abbreviated as NOW, WILD as WI.
+
+3 NOTABLE/TABLE
+
+If set TABLE,  all  buffer  characters  are  translated,  using  the  currently
+selected  search table, before they are compared with the search string. If set
+NOTABLE, the search table is not used, and the setting of  GENERAL/EXACT  takes
+effect. See help on SEARCH for more information.
+
+NOTABLE may be abbreviated as NOT, TABLE as T.
+
+3 NOREGEX/REGEX
+
+If set REGEX, your search strings are treated as regular expressions  (such  as
+are  understood  by  'grep'),  rather than as text strings. Regular expressions
+give you much more flexibility in searching than regular strings do.  See  help
+on SET SEARCH for more information about regular expressions.
+
+NOREGEX may be abbreviated as NOR, REGEX as R.
+
+3 CHAR/WORD
+
+If you set WORD, ED uses 'word mode' to search the  file.  In  word  mode,  the
+search  string is broken up into words (using the currently-defined word delim-
+iters) and ED searches for those words, regardless of what separates them.  The
+idea  is  that  you can search for a sequence of words, even if there is a line
+break in the middle of them. See the help topic  "search  word_mode"  for  more
+about this.
+
+CHAR may be abbreviated as C, WORD as WO.
+
+2 SECTION
+
+Use the SET SECTION command to set the number of lines the  SECTION  key  moves
+the  cursor.  The syntax of the command is SET SECTION n, where n is the number
+of lines in a section.
+
+If you SET SECTION to a value less than or equal to  zero,  it  is  interpreted
+differently.  If  you  SET  SECTION 0, for example, that means a section is one
+screenful, that is, the number of lines that are visible in the current window.
+If  you set it to -1, that means one screenful minus 1, giving a 1-line overlap
+between sections. Similarly, -5 would mean a 5-line overlap.
+
+You can abbreviate the SET SECTION command as SE SEC.
+
+2 SHELL
+
+Use the SET SHELL command to set the shell that  you  use  (on  unix  systems).
+When  you  use  the window Spawn command, this shell will be run in the created
+process. The syntax is SET SHELL command-that-invokes-shell.  For  example,  c-
+shell users would say SET SHELL /bin/csh.
+
+You can abbreviate the SET SHELL command as SE SH.
+
+2 STABLE
+
+Use the SET STABLE command to set the name of the  current  search  table.  The
+syntax  of the SET STABLE command is SET STABLE table_file_name. For a descrip-
+tion of the table format, see the 'search' help topic.
+
+You can abbreviate the SET STABLE command as SE ST.
+
+2 TABS
+
+The SET TABS command allows you change the tab settings on your  terminal.  The
+tab  settings  are  defined in your startup file, and you can edit them freely.
+The syntax is SET TABS tab_name, where tab_name  is  defined  in  your  startup
+file.
+
+You can abbreviate the SET TABS command as SE T.
+
+2 WILDCARD
+
+Use the SET WILDCARD command to indicate which ascii character you want to  use
+as a wildcard in searches when the search mode is set WILD. For example, if you
+say SET WILDCARD x, and you SET SEARCH WILD, you can use  'x'  as  a  match-all
+character in your search strings.
+
+You can abbreviate the SET WILDCARD command as SE WI.
+
+2 WORD
+
+Use the SET WORD command to tell ED what characters delimit words. ED considers
+the  beginning  of a word to be any character that is preceded by a word delim-
+iter character. The default word delimiters are: space, carriage  return,  line
+feed,  vertical tab, form feed, and tab. The set of word delimiters affects the
+behavior of the WORD, DELW, and delete-to-beginning-of-word keys. To change the
+word  delimiters, hit control-Z to get the command prompt, and enter SE WO.  ED
+will prompt you for the new word delimiters. You can  enter  up  to  sixty-four
+characters.  Each character you enter will become a valid word delimiter.  Ter-
+minate the entry by pressing ENTER.
+
+2 WRAP
+
+Use the SET WRAP command to set the right margin the FILL command uses when  it
+does  word  fill  on the select range. The syntax is SET WRAP n, where n is the
+column number of the right-hand margin.
+
+You can abbreviate the SET WRAP command as SE WR.
+
+1 SHOW
+
+Use the SHOW command to display information about current editor  settings  and
+file  names. The syntax is SHOW item. If you omit the item, ED will display all
+current settings and file names.
+
+You can abbreviate the SHOW command as SH.
+
+2 AUTO_TABS
+
+The SHOW AUTO_TABS command will make ED display whether the auto  tabs  feature
+is turned on or off. See the 'SET AUTO_TABS' help topic for more information.
+
+You can abbreviate this command as SH AU.
+
+2 AWRAP
+
+The SHOW AWRAP command will make ED display whether  the  autowrap  feature  is
+turned on or off. See the 'SET AWRAP' help topic for more information.
+
+You can abbreviate this command as SH AW.
+
+2 BOX
+
+The SHOW BOX command will make ED display whether box cut/paste mode is  turned
+on or off. See the "box_mode" help topic for more information.
+
+You can abbreviate this command as SH B.
+
+2 CASE
+
+The SHOW CASE command will make ED display  the  current  case-change  setting,
+which may be Upper, Lower, Opposite or Capitalize. See the help on SET CASE for
+more complete information about these choices.
+
+You can abbreviate this command as SH CA.
+
+2 CFRIENDLY
+
+The SHOW CFRIENDLY command will make ED  display  whether  C-friendly  mode  is
+turned on or off. See the 'SET CFRIENDLY' help topic for more information.
+
+You can abbreviate this command as SH CF.
+
+2 CLOSE_PARENS
+
+The SHOW CLOSE_PARENS command will make ED display whether parenthesis matching
+is  turned  on  or off. See the 'SET CLOSE_PARENS' help topic for more informa-
+tion.
+
+You can abbreviate this command as SH CL.
+
+2 DEFAULTS
+
+The SHOW DEFAULTS command will make ED display the current list of default file
+extensions. See the 'SET DEFAULTS' help topic for more information.
+
+You can abbreviate this command as SH D.
+
+2 GREP
+
+The SHOW GREP command will make ED display whether the GREP command is in  ver-
+bose or silent mode. See the 'SET GREP' help topic for more information.
+
+You can abbreviate this command as SH G.
+
+2 MODIFICATIONS
+
+The SHOW MODIFICATIONS command will make ED indicate  whether  the  buffer  the
+cursor is in has been modified since it was opened.
+
+You can abbreviate the SHOW MODIFICATIONS command as SH M.
+
+2 OVERSTRIKE
+
+The SHOW OVERSTRIKE command will make ED display  whether  overstrike  mode  is
+turned on or off. See the 'SET OVERSTRIKE' help topic for more information.
+
+You can abbreviate this command as SH O.
+
+2 PAGE
+
+The SHOW PAGE command will make ED display the current page  delimiter  string.
+This  string  is  used  by the keypad PAGE command to define the beginning of a
+page. You can set the value of this string with the SET PAGE command.
+
+You can abbreviate this command as SH PAG.
+
+2 PARAGRAPH
+
+The SHOW PARAGRAPH command will make ED display the current paragraph delimiter
+string.  This  string  is used by the keypad FILL command to decide where para-
+graphs start and end. You can set the value of this string with the  SET  PARA-
+GRAPH command.
+
+You can abbreviate this command as SH PARA.
+
+2 PARENTHESES
+
+The SHOW PARENTHESES command will make ED display the currently active list  of
+parentheses. See the 'SET PARENTHESES' help topic for more information.
+
+You can abbreviate this command as SH PARE.
+
+2 POSITION
+
+The SHOW POSITION command will make ED display:
+
+o  The line number of the line the cursor is on.
+o  Which byte of the file the cursor is on (record  terminators  count  as  one
+   byte).
+o  Which row of the screen the cursor is on.
+o  Which column of the screen the cursor is on.
+
+You can have ED display your position constantly by using the  -u  option  when
+you invoke ED. See the 'invoking_ed' help topic for more information.
+
+You can abbreviate this command as SH PO.
+
+2 SEARCH
+
+The SHOW SEARCH command will make ED display the current search  settings.  See
+the help on SEARCH for a description of these settings.
+
+You can abbreviate this command as SH SEA.
+
+2 SECTION
+
+The SHOW SECTION command will make ED display the number of  lines  the  cursor
+moves when you hit the SECTION key. You can modify this value with the SET SEC-
+TION command.
+
+You can abbreviate this command as SH SEC.
+
+2 TABS
+
+The SHOW TABS command will make ED display the name of the current  tab  setup.
+You can change the tab settings with the SET TABS command.
+
+You can abbreviate this command as SH T.
+
+2 WILDCARD
+
+The SHOW WILDCARD command will make ED display the current search-string  WILD-
+CARD value. See SET WILDCARD for a description of how search wildcards work.
+
+2 WORD
+
+The SHOW WORD command will make ED display the current set of word  delimiters.
+See SET WORD for a description of how the word delimiters work.
+
+You can abbreviate this command as SH WO.
+
+2 WRAP
+
+The SHOW WRAP command will make ED display the current value of the  fill  wrap
+margin. This value is used by the keypad FILL command. See help on SET WRAP for
+information about this parameter.
+
+You can abbreviate this command as SH WO.
+
+1 SMALLER
+
+The SMALLER command makes the window the cursor is in smaller.  The  syntax  is
+SMALLER  lines, where lines is how many screen lines you want deducted from the
+window. Other windows are made bigger to accommodate the new size.
+
+You can abbreviate the SMALLER command as SM.
+
+1 SORT
+
+The SORT command sorts a group of records in a buffer. The  command  syntax  is
+SORT  or SORT R if you want reverse (descending) order. Its behavior depends on
+whether select is active, and whether box mode is in effect:
+
+If select is not active, the entire buffer is sorted.
+
+If select is active, and box mode is not in effect, only the  select  range  is
+sorted,  with  the  proviso  that only the records that would be (at least par-
+tially) killed, if you issued a CUT command, are sorted.
+
+If box mode is in effect, only the records that  participate  in  the  box  are
+sorted,  and  only what is in the box determines the order. In other words, the
+portion of each record that is in the box is  the  key  for  the  sort.  Entire
+records are sorted, however, not just what's in the box. Note that records that
+do not extend into the box are treated as having blank keys.
+
+You cannot abbreviate the SORT command, because the danger of mistyping another
+command is too great.
+
+1 startup
+
+When you start ED, you specify on the command  line  the  name  of  a  personal
+startup  file,  which contains all your preferences for how ED works. Here is a
+sample startup file:
+
+ ~/ed.jou
+ shell=/bin/csh
+ tabs=5
+ curtab=1
+ NORMAL
+ t       t       t       t       t       t       t       t       t       t...
+ c
+ t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t...
+ fortran
+ t       t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t...
+ macro
+ t               t        t     t     t     t     t     t     t     t     t...
+ none
+ tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt...
+ wrap=80
+ section=18
+ word=<1d>032<1d>009,.+=-*/[]{}()<1d>010<1d>011<1d>012<1d>013
+ page=<1d>012
+ paragraph=<1d>013<1d>013
+ search=gbnn
+ stable=~/categories.st
+ close=y
+ parens=(){}[]
+ defext=c h for mar com dat log rno
+ auto=y
+ cfriendly=y
+ boxmode=n
+ ndefined=11
+ d1 3 da 1 6f 1 d 1 ce 3 da 1 63 1 d 1 ...
+
+In this file, the ASCII character <1d> is special:  it  is  always  immediately
+followed by three decimal digits that give the value of the intended character.
+The page delimiter character, for example, appears as <1d>012, which means  the
+ASCII form-feed character (whose decimal value is 12). You should represent any
+non-printable character in this way, when it needs to  appear  in  the  startup
+file.
+
+There follows a description of each line in the file:
+
+   ~/ed.jou
+        The name of the default journal file. ED uses this to allow you to  say
+        ED -r when you want to recover whatever you were last working on.
+   shell=/bin/csh
+        The command you want ED to use when you create a  Spawn  window  (which
+        creates a window with another process in it).
+   tabs=5
+        The number of tab setups that follow.
+   curtab=1
+        Which tab setup is to be used by default (number 0 is the first).
+   NORMAL
+   t      t...
+        Each tab setup is described by two lines. The first line gives the name
+        of  the  setup  (which  you  use  when issuing a SET TABS command). The
+        second line is a series of t's and spaces that tells ED where  the  tab
+        stop  are.  In  the  example file, the NORMAL setup has tab stops every
+        eight columns.
+   wrap=80
+        The left margin beyond which word fill will not extend  any  line.  See
+        the help on "KEYPAD details FILL" for more information.
+   section=18
+        The number of lines ED moves when you issue a SECTION command. If  this
+        value  is  less than or equal to zero, the number of lines moved is the
+        number of lines in the current window, plus the value. A value  of  -1,
+        for  example,  will  cause  the  SECTION command to move one screenful,
+        minus one line (so you have a one-line overlap).
+   word=<1d>032<1d>009,.+=-*/[]{}()<1d>010<1d>011<1d>012<1d>013
+        The characters that are considered to delimit  'words'  in  your  file.
+        This affects the move-by-word command, the delete-word command, and the
+        word-fill command.  For example, when you do a DELW, ED starts  at  the
+        cursor  position, looking for a character that is in the word-character
+        list, followed by a character that is not  in  the  list,  and  deletes
+        everything up to (but not including) the second character.
+   page=<1d>012
+        The character that delimits a page.
+   paragraph=<1d>013<1d>013
+        The string that delimits a paragraph. Text that is  separated  by  this
+        string is not joined together during a word fill operation.
+   search=gbnnn
+        The default search flags:
+
+           a) g means case-insensitive, else (e) case-sensitive.
+           b) b means match position is at beginning of string, else (e) end.
+           c) w means wildcards are enabled, else (n) not.
+           d) n means no search table, else (t) table in effect.
+           e) r means use regular expression searching, n means don't.
+              r overrides the rest of the flags, except beginning/end.
+
+   stable=~/categories.st
+        The name of the search table file to be  used  if  the  search  is  set
+        TABLE.
+   close=y
+        Determines whether ED highlights closing parentheses. If set to 'y', ED
+        will  briefly  highlight a corresponding parenthesis character when you
+        type a parenthesis character. Set it  to  'n'  to  disable  parenthesis
+        closing.
+   parens=(){}[]
+        The list of known parenthesis characters (for which parenthesis closing
+        is performed).
+   defext=c h for mar com dat log rno
+        The list of default file extensions. When ED can't find a file name you
+        provide,  it  tries  appending a period and each of these extensions to
+        the name.  If it still doesn't find an existing file,  it  assumes  you
+        want to create a new file, using the original name.
+   auto=y
+        Controls the 'auto tabs' feature. If set to 'y', ED will  automatically
+        insert  enough tabs to line you up with the previous line in your file,
+        each time you hit RETURN. This is handy in many programming  languages.
+        Set it to 'n' to turn the feature off.
+   cfriendly=y
+        Controls the 'c-friendly' mode. If set to 'y',  ED  will  automatically
+        position  }  characters directly under the { character they match. This
+        is useful when programming in C. Set it to 'n' to disable the feature.
+   boxmode=n
+        Controls whether CUT and PASTE work in 'box mode'. See  the  'box_mode'
+        help  topic  for  more about box mode. Set it to 'n' to disable box cut
+        and paste.
+   ndefined=11
+        Tells how many key definitions to expect on the  immediately  following
+        lines.   Set  this to 0 initially; ED will alter it whenever you define
+        some keys and then issue a STORE KEYS command.
+
+1 STORE
+
+Use the STORE command to make a permanent copy of any or all  of  your  current
+editor  settings  and  key  definitions. The current values and definitions are
+written into your startup file on disk; whenever you start up ED, it reads  the
+contents of the startup file to determine what settings and key definitions you
+want to start up with.
+
+The format of the STORE command is STORE item. If you just say STORE, all items
+will be stored.
+
+You can abbreviate the STORE command as ST.
+
+2 AUTO_TABS
+
+The STORE AUTO_TABS command will make ED  store  the  current  setting  of  the
+AUTO_TABS  switch.  See  help  on SET AUTO_TABS for more information about auto
+tabs.
+
+You can abbreviate this command as ST AU.
+
+2 AWRAP
+
+The STORE AWRAP command will make ED store the current  setting  of  the  AWRAP
+switch. See help on SET AWRAP for more information about autowrapping.
+
+You can abbreviate this command as ST AW.
+
+2 BOX
+
+The STORE BOX command will make ED store the current setting of  the  box  mode
+switch. See help on "box_mode" for more information about box mode.
+
+You can abbreviate this command as ST B.
+
+2 CASE
+
+The STORE CASE command will make ED store the  current  setting  of  the  case-
+change  value,  which  may be one of Upper, Lower, Opposite or Capitalize.  See
+the help on SET CASE for more information about these choices.
+
+You can abbreviate this command as ST CA.
+
+2 CFRIENDLY
+
+The STORE CFRIENDLY command will make ED  store  the  current  setting  of  the
+CFRIENDLY  switch.  See  help  on  SET  CFRIENDLY for more information about C-
+friendly mode.
+
+You can abbreviate this command as ST CF.
+
+2 CLOSE_PARENS
+
+The STORE CLOSE_PARENS command will make ED store the current  setting  of  the
+CLOSE_PARENS  switch.  See  help on SET CLOSE_PARENS for more information about
+parenthesis matching.
+
+You can abbreviate this command as ST CL.
+
+2 DEFAULTS
+
+The STORE DEFAULTS command will make  ED  store  the  current  setting  of  the
+DEFAULTS  extension  list.  See help on SET DEFAULTS for more information about
+how default extensions work.
+
+You can abbreviate this command as ST D.
+
+2 GREP
+
+The STORE GREP command will make ED store the current setting of  the  GREPMODE
+switch. See help on SET GREP for more information about GREP modes.
+
+You can abbreviate this command as ST G.
+
+2 KEYS
+
+The STORE KEYS command will make ED save all of your currently defined keys.
+
+You can abbreviate the STORE KEYS command as ST K.
+
+2 OVERSTRIKE
+
+The STORE OVERSTRIKE command will make ED store  the  current  setting  of  the
+OVERSTRIKE  switch. See help on SET OVERSTRIKE for more information about over-
+strike mode.
+
+You can abbreviate this command as ST O.
+
+2 PAGE
+
+The STORE PAGE command will store the  current  value  of  the  page  delimiter
+string.
+
+You can abbreviate the STORE PAGE command as ST PAG.
+
+2 PARAGRAPH
+
+The STORE PARAGRAPH command will store the current value of the paragraph  del-
+imiter string.
+
+You can abbreviate the STORE PARAGRAPH command as ST PARA.
+
+2 PARENTHESES
+
+The STORE PARENTHESES command will make ED store the currently active  list  of
+parentheses. See help on SET PARENTHESES for more information.
+
+You can abbreviate this command as ST PARE.
+
+2 SEARCH
+
+The STORE SEARCH command will make ED save your current search parameters.
+
+You can abbreviate the STORE SEARCH command as ST SEA.
+
+2 SECTION
+
+The STORE SECTION command will make ED save your  current  SECTION  value.  The
+SECTION  value is the number of lines ED moves the cursor when you hit the SEC-
+TION key.
+
+You can abbreviate the STORE SECTION command as ST SEC.
+
+2 STABLE
+
+The STORE STABLE command will make ED save your current search table file name.
+
+You can abbreviate the STORE STABLE command as ST ST.
+
+2 TABS
+
+The STORE TABS command will make ED store the name of the tab  settings  you're
+currently using.
+
+You can abbreviate the STORE TABS command as ST T.
+
+2 WILDCARD
+
+The STORE WILDCARD command will store the current search-string WILDCARD  char-
+acter.  See SET WILDCARD for more about search wildcards.
+
+You can abbreviate the STORE WILDCARD command as ST WI.
+
+2 WORD
+
+The STORE WORD command will store the current values of the word delimiters.
+
+You can abbreviate the STORE WORD command as ST WO.
+
+2 WRAP
+
+The STORE WRAP command will store the current wrap margin.
+
+You can abbreviate the STORE WRAP command as ST WR.
+
+1 SUBSTITUTE
+
+The SUBSTITUTE command makes ED replace  every  appearance  of  a  string  with
+another string. It applies only the the window the cursor is in. The syntax is:
+
+SUBSTITUTE /string1/string2/
+
+This command will cause every appearance of string1 (in the current window)  to
+be  changed to string2. Note that you can use a character other than '/' if one
+of your strings actually contains the '/' character:
+
+SUBSTITUTE ?/usr/lib?/usr/local/lib?
+
+In this case, '?' is the delimiter, and the '/' characters are considered  part
+of the strings.
+
+The second string can be null (which makes the command just remove instances of
+the first string). This looks like this:
+
+SUBSTITUTE /xyz//
+
+This command would remove all appearances of the string 'xyz'.  Note  that  you
+can't use a null value for string1; ED will complain if you try.
+
+You can abbreviate the SUBSTITUTE command as SU. Note that there  is  a  keypad
+key  called SUBST that does one or more substitutions. You can find more infor-
+mation about this by looking at the help topic 'keypad details SUBST'.
+
+1 tabs
+
+Your startup file defines a number of tab setups. Here is an example:
+
+ tabs=5
+ curtab=1
+ normal
+ t       t       t       t       t       t       t       t       t...
+ c
+ t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t...
+ fortran
+ t       t   t   t   t   t   t   t   t   t   t   t   t   t   t   t...
+ macro
+ t               t        t     t     t     t     t     t     t     t...
+ none
+ tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt...
+
+The first line, tabs=5, means that there  are  five  tab  setups  defined.  The
+second  line, curtab=1, means that the default tab setup (when you start up ED)
+is number one. Note that the first setup is number zero, so in this  case,  the
+default tab setup is 'c'.
+
+Immediately following the curtab=1 line are the tab  setup  definitions.  There
+must  be  exactly as many tab setups as are claimed by the tabs= line. Each tab
+setup has two lines: the first gives the name of the setup, which can  be  any-
+thing. The second line actually shows there the tab stops are. This line should
+have a t in the first column, followed by a t in each column you want the  cur-
+sor to move to when you hit tab.
+
+It's a good idea to make the tab setup lines long enough  that  they  can  work
+correctly  for the widest terminal you expect to use. If you run off the end of
+a tab setup (that is, a record in the file is longer than the tab  setup  line)
+ED reverts to every-eight-column tabs.
+
+1 terminals
+
+ED is somewhat device-independent. There is no information  in  the  executable
+code  that  tells  ED  how  a  given terminal works; all such terminal-specific
+information is kept in external disk files, which are read in when you start up
+ED.  These  files are called terminal description files. If you have a terminal
+that is not already supported by ED, you can (if you understand how your termi-
+nal  works)  create  a terminal description file for that terminal. Once you do
+this, you will be able to use ED on that kind of terminal.
+
+2 teaching
+
+You can teach ED about the sequences of byte your keyboard generates by  invok-
+ing  ED  with the -z option. It will ask you for the name of an existing confi-
+guration file (from which it gets the terminal display  control  commands)  and
+then  will prompt you to press all the key combinations it understands. It will
+also ask you how many additional keys you want to have available.  By  default,
+these  additional  keys  will make ED insert meaningless eightbit characters in
+the file, but you can store key definitions under them.
+
+2 caveats
+
+ED distinguishes between terminals that have some smarts,  and  terminals  that
+are  'braindead'.  Braindead terminals are considered completely uncontrollable
+in the conventional way (that is, by  sending  control  strings  to  them)  and
+require  special  programming  of some kind in order that ED can use them. This
+has been done (so far) only for DOS and OS/2 machines.
+
+Terminals that have some smarts may have more or less smarts depending on their
+design.  If  a terminal has no control string to position the cursor, for exam-
+ple, you should probably tell ED that the terminal is braindead and write what-
+ever special code is necessary.
+
+ED expects non-braindead terminals to be able to do at least the following:
+
+o  Position the cursor.
+o  Erase the screen.
+o  Erase from the cursor to the end of the cursor's line.
+o  Erase from the cursor to the bottom of the screen.
+o  Move the cursor to the right or left.
+o  Do something like what carriagereturn does.
+o  Do something like what carriagereturn-newline does, with scrolling.
+
+2 file_format
+
+The first 19 lines of the description file contain control strings. If the ter-
+minal doesn't support a particular kind of control string, the single character
+~ should appear on the corresponding line. This tells ED that  that  capability
+is  missing, and ED attempts to compensate for that. Braindead terminals should
+have a ~ on all lines except the 17th.
+
+The control strings are (in order):
+
+   1  A string that initializes the terminal. This string is sent to the termi-
+      nal when you start ED.
+   2  A string that returns the terminal to 'normal' mode. This string is  sent
+      to the terminal when you leave ED.
+   3  A string that positions the cursor. This  string  is  in  printf  format,
+      where  the  row  and column are inserted into the string. A typical value
+      (for ANSI terminals) would be <escape>[%d;%dH.
+   4  A string that sets the scrolling region. This string is in printf format,
+      where  the  row  and column are inserted into the string. A typical value
+      (for ANSI terminals) would be <escape>[%d;%dr. This functionality is  not
+      required, but it makes ED more efficient.
+   5  A string that puts the terminal in reverse-video  mode.  This  is  not  a
+      required function, but it improves ED's appearance.
+   6  A string that returns the terminal to normal-video mode.
+   7  A string that makes the terminal beep or warn the user in some way.  This
+      is  an  optional  functionality,  but it helps for communicating with the
+      user.
+   8  A string that makes the terminal delete lines, starting with the line the
+      cursor  is on, scrolling up from the bottom of the scrolling region. This
+      string has one parameter (the number of lines to delete) and it, like the
+      positioning string, is in printf format (e.g.: <escape>[%dM).
+   9  A string that makes the terminal insert blank lines at the  cursor  posi-
+      tion,  scrolling  existing  lines down toward the bottom of the scrolling
+      region. This string has one parameter (the number of lines to delete) and
+      it,   like   the   positioning   string,   is  in  printf  format  (e.g.:
+      <escape>[%dL).
+   10 A string that erases the entire screen.
+   11 A string that erases all characters (on the cursor's line) from the  cur-
+      sor position to the right side of the screen.
+   12 A string that moves the cursor up, unless the cursor is at the top of the
+      scrolling region, in which case the scrolling region is scrolled down.
+   13 A string that moves the cursor down, unless the cursor is at  the  bottom
+      of  the  scrolling region, in which case the scrolling region is scrolled
+      up.
+   14 A string that moves the cursor to the right. This string has one  parame-
+      ter   (the   number   of   columns  to  move)  in  printf  format  (e.g.:
+      <escape>[%dC).
+   15 A string that moves the cursor to the left. This string has one parameter
+      (the number of columns to move) in printf format (e.g.: <escape>[%dD).
+   16 A string that moves the cursor to the beginning of the next line,  scrol-
+      ling up if the cursor is at the bottom of the scrolling region. Most ter-
+      minals will use carriagereturn-linefeed for this.
+   17 A string that ED uses to show you where the end of the file is. <eob>  is
+      recommended.
+   18 A string that moves the cursor to the beginning  of  the  line  it's  on.
+      Carriagereturn should work for most terminals.
+   19 A string that erases from the  cursor  position  to  the  bottom  of  the
+      screen.
+
+These control strings may contain strange control characters,  so  to  make  it
+easier  to  represent such characters, there is a trick for including them in a
+way that won't confuse the operating system when it's  reading  the  file.  The
+ASCII  character 29 (decimal) is special; ED looks at the next three characters
+in the string, and interprets them as an decimal representation of the  charac-
+ter you really want. For example, to represent linefeed, you would use <29>010.
+
+Immediately following the control  strings  is  a  section  of  the  file  that
+describes  what characters are generated by the terminal when you press various
+keys (in particular, the keypad keys). The first line of this section  contains
+a  key  count  (this is line 20 of the file). The key count must be at least 44
+(there are 44 required special keys that ED expects to have fixed meanings). If
+you  want  to  have  other keys available to ED (for defining) you should use a
+count greater than 44.
+
+Following the key count are the sequences of characters the terminal will  send
+to ED when you press keys. You should use the ASCII 29 trick to represent char-
+acters that your operating system might not like. The sequences must be in  the
+following order:
+
+                         UP
+                         DOWN
+                         RIGHT
+                         LEFT
+                         NEXTLINE
+                         WORD
+                         EOL
+                         CHAR
+                         FORW
+                         BACKW
+                         CUT
+                         PAGE
+                         SECTION
+                         APPEND
+                         DELW
+                         DELC
+                         SELECT
+                         ENTER
+                         GOLD
+                         CLONE
+                         FNDNXT
+                         DELL
+                         OPENLINE
+                         CHGCASE
+                         DELEOL
+                         SPECINS
+                         BOTTOM
+                         TOP
+                         PASTE
+                         COMMAND
+                         FILL
+                         REPLACE
+                         UNDW
+                         UNDC
+                         RESET
+                         SUBST
+                         GOLD GOLD (not actually used)
+                         WINDOW
+                         FIND
+                         UNDL
+                         RETURN
+                         MARK
+                         SLIDERIGHT
+                         SLIDELEFT
+
+You should probably look at the ansi.ed template  file  to  see  how  all  this
+works.  Following the 44th character sequence, you can put additional sequences
+that your terminal may be capable of generating.  Including  them  in  the  the
+description makes it possible to define the corresponding keys.
+
+1 TIME
+
+The TIME command loads the paste buffer with the current time  of  day  in  the
+format  HH:MM:SS,  where  HH is the hour(military), MM is the minute, and SS is
+the second.
+
+You can use TI as an abbreviation for TIME.
+
+1 TRIM
+
+The TRIM command trims trailing blanks and tabs from every record in  a  buffer
+(or  from  every  record in the select range, if select is active). When you do
+this, you won't see anything, since the trimmed characters are not visible.
+
+You can use TR as an abbreviation for TRIM.
+
+1 UNLOAD
+
+The UNLOAD command stores all of your key definitions is a listing file,  which
+you can edit and then reload using the LOAD command.
+
+The syntax of the command is UNLOAD filename, where filename is the name of the
+created file containing the key definition listing.
+
+You can abbreviate the UNLOAD command as U.
+
+1 wildcards
+
+ED allows you to use wildcards in file names; when you do so, it edits matching
+files  in alphabetical order, one after the other. They way this works is a bit
+complicated, and varies a bit from system to system. What you  need  to  under-
+stand  is  that  processing  of  wildcards in file names depends on whether the
+shell (on unix systems) 'sees' the wildcard characters, or whether only ED sees
+them.  (Note:  none  of this discussion applies to VMS systems, because they do
+not have a shell).
+
+If you invoke ED from the command line, the shell will, in general, expand  any
+wildcards it sees. For example, if you say
+
+ED *.c
+
+the shell will find all names matching *.c, and convert your command into some-
+thing like this:
+
+ED abc.c xyz.c zzzzz.c
+
+and *then* invoke ED. Thus, ED does not, in general, see any wildcards in files
+coming  from  the  command line. On the other hand, when you are looking at the
+File> prompt, and you enter  file  names  with  wildcards,  the  shell  is  not
+involved, and the expansion is controlled by ED alone.
+
+This means that you can take advantage of full  regular  expression  processing
+when  invoking ED from the command line, and take advantage of a different kind
+of wildcarding when you specify files in response to the File> prompt.  Specif-
+ically, the wildcards supported within ED are:
+
+*      The * matches any (possibly null) string of characters.
+
+?      The ? matches any single character.
+
+...    The  string  ...  is  an  instruction  to  search   all   subdirectories
+       recursively, similarly to what ls -R does.
+
+The best way to explain is with examples:
+
+*.c               This would match all .c files in the current  working  direc-
+                  tory.
+
+a?b.c             This would match  files  like  azb.c,  or  aab.c,  but  *not*
+                  addb.c. The ? matches only a single character.
+
+.../*.c           This would match all .c files in the current  working  direc-
+                  tory, and all subdirectories of it, down to any depth.
+
+/a/b/.../e*/*.h   This would match all .h files that are in  directories  whose
+                  names  start with e, which are in /a/b or any subdirectory of
+                  /a/b.
+
+You may find that ED just sits there when you use the more  complicated  forms.
+This  is  not  wrong,  ED  is just examining all the directories you specified,
+finding all file names that match. Once the first file appears, things  proceed
+quickly.
+
+1 windows
+
+This section describes the windowing feature, which lets you  open  windows  to
+other files while you are editing your main file.
+
+2 using_windows
+
+ED allows you to split the terminal screen up into separate 'windows' that show
+the  contents of different files, or different parts of the same file.  Windows
+let you compare, at a glance,  information  that  resides  in  separate  files,
+without having to memorize or write anything down.
+
+They are especially useful to programmers, who frequently  need  to  make  sure
+that  some subroutine is receiving the same arguments that some calling routine
+is trying to pass to it. It is a simple  matter,  for  instance,  to  use  your
+system's  online  help  command  to  create a file containing useful programmer
+information. Once this file is on the system, anyone can window into it to  get
+the information without having to go chasing after manuals.
+
+2 window_command
+
+To enter window command mode, press the WINDOW key on the keypad (usually  Gold
+PF2). You will get a prompt:
+
+Open,Close,Move,Spawn>
+
+If you get this prompt by mistake, just hit RETURN to continue editing.
+
+2 OPEN
+
+To open a new window, respond to the main window prompt by typing O and hitting
+RETURN. You will get a new prompt:
+
+Open file>
+
+If you just hit RETURN here, you will be telling ED to create a new copy of the
+data  in the window you're currently editing. If you enter a file name, ED will
+try to open the file you specify and load its contents  into  the  new  window.
+Wildcards are allowed in the file name; the first matching file ED finds is the
+one it selects. Default extensions (from your startup file) are applied to  the
+filename  you  specify,  if  it  has no extension. If no file with the name you
+specify exists, an empty window is created.
+
+You can use the -b or -h options either when you type O, or when you enter  the
+file  name.  Entering  the  filename as just -b will make a copy of the current
+window, but will display it in binary mode.
+
+The new window will appear at the bottom of the screen. Any other windows  will
+be  chopped  or  squeezed  upward to make enough room for it. Since the minimum
+window size is three lines, you may run out of room on the screen. Once the new
+window  appears,  the data from the appropriate file will fill it (if appropri-
+ate) and the cursor will jump to the top of the new window.
+
+You can set the cursor's initial position in the new file by  specifying  -innn
+when  you  give the O command. This works the same way the -i option works when
+you invoke ED.
+
+2 MOVE
+
+To move from one window to another, there are three options:
+
+   1  Respond to the main window prompt by typing M  and  hitting  RETURN.  The
+      cursor  will move to the window above the one it's in. If it's already in
+      the top window, it moves to the bottom window. This means that when there
+      are two windows display, M moves to the 'other' window.
+
+   2  There is a shorthand involved in the move command, to wit: ML  will  move
+      to  the "last" window, that is, the window above the one you're currently
+      in. The 'L' can be repeated: MLLL will move to the window three above the
+      current  one.   Similarly,  MN  will  move  to the "next" window; the one
+      below. MNN will move two windows down, etc.
+
+   3  You can use the MARK and RETURN commands to toggle back and forth between
+      two windows. See the help on MARK for more about how these commands work.
+
+2 CLOSE
+
+To close a window, there are two options:
+
+   1  Respond to the main window prompt by typing C  and  hitting  RETURN.  The
+      window  the  cursor is in will be removed from the screen. Note that this
+      does not cause any update to disk files; the buffer is just thrown  away.
+      Also,  you cannot close the top window this way; you must QUIT or EXIT to
+      get out of that one.
+
+   2  There is a shorthand involved in the close command, to wit: CL will close
+      the "last" window, that is, the window above the one you're currently in.
+      The 'L' can be repeated: CLLL will  close  the  window  three  above  the
+      current  one.  Similarly, CN will close the "next" window; the one below.
+      CNN will close the window two windows down, etc.
+
+2 SPAWN
+
+The window SPAWN command has two forms: one to create a new window and let  you
+run  commands  in it, and another to run a single command, without creating any
+new window.
+
+If you just say SPAWN (which can be abbreviated as S), ED makes a new window on
+the  screen,  but instead of loading a file into it, it creates another process
+on the system. This lets you talk to the operating system, look for files, read
+mail  and  whatnot,  without  really leaving your editing session. When you get
+done with a spawned window, you log out in the usual way, and the  window  (and
+its process) disappears. At this point, you can continue editing where you left
+off. (If your terminal doesn't support scrolling, you may need to hit control-W
+to fix the screen when you log out of the window.)
+
+If you put an operating system command following the word SPAWN,  ED  runs  the
+command in a subprocess and returns to the window prompt as soon as the command
+completes. No new window appears, and any output from the shell command appears
+on  the  screen in a disorderly way (use control-W to restore the appearance of
+the screen). If you're editing on a unix system, you can  redirect  the  output
+(if any) of the command, to avoid messing up the screen.
+
+1 WRITE
+
+The WRITE command will make ED write the contents  of  the  current  window  to
+disk. The current window is the one the cursor is in. The syntax is
+
+WRITE filename
+
+If you leave the filename off and just say WRITE, a new  version  of  the  file
+that  the window looks into will be created. If select is active when you issue
+the WRITE command, the contents of the select range will be written, instead of
+the entire file. If box mode is in effect, only the box is written.
+
+Writing the select range can be dangerous, so be careful. In fact, if you issue
+the  WRITE  command  without  specifying  a file name, ED turns select off, and
+writes out the entire file. This is to prevent you  from  trying  to  WRITE  to
+update  a  file,  when you don't know that select is active, and ending up with
+only that select range in the file. If you want to write a  select  range,  you
+*must*  specify a file name. If you are editing test.dat, and you *really* want
+to write a select range back to that file, say WRITE test.dat.
+
+One trouble with the WRITE command is  that  you  may  make  it  impossible  to
+correctly  recover  edits  if your process (or the system) crashes. Suppose you
+window into a file, kill some text, write the window, pop back to the main win-
+dow, and insert the killed text, and then the system crashes. Because you modi-
+fied the file you windowed into (by WRITEing it), the recovery won't  find  the
+windowed  file  in  the  same state it was in originally. My policy is to avoid
+getting text I insert into the main buffer from files I later WRITE to.
+
+You can abbreviate the WRITE command as W.

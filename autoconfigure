@@ -1,0 +1,51 @@
+#! /bin/csh
+rm -f test.c test.out compiler config.h
+echo "Determining whether you have gcc..."
+echo "main(){}" >test.c
+gcc -c test.c >&test.out
+echo "Creating 'compiler'..."
+if ( -z test.out ) then
+	set compile=gcc
+	echo "CC=gcc" >compiler
+#	echo "CFLAGS=-O2 -funroll-loops" >> compiler # does not work with 1.42!
+	echo "CFLAGS=-O2" >> compiler
+else
+	set compile=cc
+	echo "CC=cc" >compiler
+	echo "CFLAGS=-O" >> compiler
+endif
+cat compiler
+rm -f test.o test.out test.c
+echo "Determining whether your compiler understands the 'signed' keyword..."
+echo "main(){signed char a;}" >test.c
+$compile -c test.c >&test.out
+set signed=0
+if ( -z test.out ) set signed=1
+#ar cq test.a test.o
+#ranlib test.a >&test.out
+#set ranlib=0
+#if ( -z test.out ) set ranlib=1
+rm -f test.a test.o test.out test.c
+echo "Determining whether your C library includes the 'mmap' and 'munmap' routines..."
+echo "extern void mmap();extern void munmap();main(){mmap();munmap();}" >test.c
+$compile test.c >&test.out
+set mmap=0
+if ( -z test.out ) set mmap=1
+rm -f test.o test.out test.c
+echo "Determining whether your C library includes the 'sbrk' routine..."
+echo "extern void sbrk();main(){sbrk();}" >test.c
+$compile test.c >&test.out
+set sbrk=0
+if ( -z test.out ) set sbrk=1
+rm -f test.out test.c test.o a.out
+#if ( $ranlib ) then
+#	echo "rlib=ranlib" >>compiler
+#else
+#	echo "rlib=echo" >>compiler
+#endif
+echo "Creating 'config.h'..."
+echo "/* This file was created by the 'autoconfigure' procedure.*/" >config.h
+if ( ! $signed ) echo "#define NO_SIGNED_CHAR" >>config.h
+if ( ! $mmap ) echo "#define NO_MMAP" >> config.h
+if ( ! $sbrk ) echo "#define NO_SBRK" >> config.h
+cat config.h

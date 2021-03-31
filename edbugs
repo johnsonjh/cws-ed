@@ -1,0 +1,93 @@
+This file lists the known ED bugs as of release 1.5.7:
+
+1) Help screens may not display properly on screens if lines not equal 24.
+   In particular, the additional subjects printed at the bottom may scroll the
+   help text off the top of the screen.
+2) Searching for <CR> (linebreak) will not be found on the last record in
+   a buffer.
+3) Mark spot/return to spot code between windows sometimes seems to go to
+   the wrong spot.
+4) Diredit of FTP software TCP/IP for DOS systems does not display year
+   correctly.  Remote unix systems sometimes don't also.
+5) ED built using Multinet TCP/IP for VMS does not seem to use TCP/IP.  Using a
+   UCX version with the translation libraries does work on Multinet.
+6) News Posting code is mostly untested, and does not work from VMS.
+7) Top two headers in news posting code not valid for some news systems.
+   Workaround:  delete them from the buffer before exiting.
+8) mmap routine calls do not seem to work under Linux or BSD386 1.0 (null file).
+   Workaround: edit config.h and add "#define NO_MMAP"
+9) Diredit of NT to NT has sscanf problems, and shows \/ for directory.
+
+List of potential enhancements (if you have an opinion, let me know):
+
+1) Select range highlighting
+2) Mouse support (click moves cursor, drag = select + move)
+3) Speed up simple searches
+4) Dired mode with a filter (ie -d *.for) 
+5) Search failure should print a message instead of just beep (some terminals
+   have the bell go dead).
+6) Direct X support (superior keyboard mapping, fonts, etc).
+7) On PC systems, make block cursor (instead of underline) an option.
+8) On PC's, ALT alpha keys should be definable
+9) Edit multiple files and keep one window open (ie keep window open on exit?)
+10) Update window from modifications of grep window.
+11) Support include file =buffname EDT syntax as open file window.
+12) Store status on exit (extra enhanced bookmark?)
+13) Easy way to pop open window to backup file
+14) A friendly substitute command has been suggested.
+15) Non-displaying buffer support is being considered.  So two files could be
+   loaded and "toggle" between them (both full screen).
+
+
+Bugs fixed and changes since V1.5.6:
+
+- SHOW command with no parameters will cause editor to abort if executed in 
+   a window with the bottom line less than 24 lines from the top of the screen.
+- When accessing a VMS system file through FTP mode, the displayed file name
+   may include the file name twice.  This prevents you from writing the file.
+- Box paste positions the cursor at the lower right corner of the box after
+   paste, while upper left corner would be more useful.
+- Under DOS, OS/2, NT: editing a file with the syntax a:file.typ will fail.
+   It will read the file correctly but cannot write the output file.  Specify
+   a directory as a workaround.
+- Trying to cancel defining a key by pressing CTRL-K (pressing CTRL-K
+   twice with no characters inbetween) does not properly update the defined
+   key status line.
+- FTP mode with no file specified puts you in diredit mode for "/" on 
+   remote unix systems; this should be your home directory.
+- Combining environment variable substitution and wildcards did not work
+   inside ED (this did not limit your shell's capabilities).  For example,
+   ~/*.c didn't work.
+- Editing * in a directory brings up . and .. while it would be much nicer
+   if these were surpressed (except in diredit mode).
+- VMS terminal size defaults for 0 0 sizing on command line braindead; it
+   should just do a QIO and get the sizes.  For unix systems, should also 
+   check symbols LINES and COLUMNS for defaults (xterm variables). 
+   * Note: final implementation uses IOCTL calls to I/O subsystem.
+- When using a backup directory (-kbackupdir) you cannot write/exit a file 
+   if a directory name is specified in the file (ie not in default dir).
+- Build problems on BSD386; make doesn't like include; IUCLC not defined;
+   cuserid not in library.
+- National Character Set does not work (enter/display 8 bit characters).
+   V1.5.7 fix for display is a compile time option enabled by "#define USE_NCS"
+- If additional qualifiers are on the command line with -n they are 
+   passed as part of the news host name and it fails.
+- Groups with upper case letters are not handled properly.
+- Critical error handler on DOS cannot get input (reboot!)
+- Define key message repaint problems if current window is closed.
+- S/ or S / should be adequate for subs command line command.
+- /../directory can cause wedges
+- Root directory entries didn't display date properly on OS/2
+- When entering a search string with a tab, sometimes (normal tabs) the
+   cursor will not be properly positioned.
+- Using wrong type of terminal configuration file (braindead on unix systems)
+   can cause abort.
+- Insert/overstrike indicator if -u specified; also for cut mode ?
+- Should be an option to suppress the continuous File> prompt (-1 option).
+- Clipboard support under Windows (Boyd request). (set ED_NUMLK=N to fix!)
+- Set text/background color on NT (new image)
+- Update of terminal *.ed files to set arrow mode (elm edit aliases fix)
+- Provided a "LOAD" file with key definitions consistent with the default
+   PC distribution bindings and added a few more keys, eg: ^A (ovr toggle), ^B
+   (bigger), (gold o,m,c,d,s windows), gold b (box tog), gold x (calc & paste)
+- Build problems on Solaris 2.x: provide custom makefile.solaris2
