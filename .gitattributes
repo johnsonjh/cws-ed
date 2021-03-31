@@ -1,2 +1,10 @@
 .h linguist-vendored
 *.h linguist-vendored
+linguist-vendored
+/cmd_dec.h linguist-vendored
+/key_dec.h linguist-vendored
+/emul_def.h linguist-vendored
+/buf_def.h linguist-vendored
+/ed_def.h linguist-vendored
+/mxch_def.h linguist-vendored
+/mxch_dec.h linguist-vendored
