@@ -63,8 +63,8 @@ site since edbugs is kept up to date there.
 UNPACKING ED
 -------------------------------------------------------------------------------
 
-If you are on a VMS system (or any other system with ZIP), you should have a 
-zip file called ED-vvv.zip (vvv is the version).  To unpack it, get a copy of 
+If you are on a VMS system (or any other system with ZIP), you should have a
+zip file called ED-vvv.zip (vvv is the version).  To unpack it, get a copy of
 Info-ZIP UNZIP 5.0 (or PKUNZIP 2.04g on DOS) and say:
 
 $ unzip ED-vvv.zip
@@ -80,7 +80,7 @@ say:
 uncompress < ED-vvv.tar.Z | tar xf -
 
 If you are on a unixy system, you could have a file called EDtarvvv.zip.  To
-unpack it, create a temporary directory, cd to it, move EDtarvvv.zip to it. 
+unpack it, create a temporary directory, cd to it, move EDtarvvv.zip to it.
 You need either GZIP or Info-Zip UNZIP to extract this file.
 
 For GZIP, say:
@@ -127,9 +127,9 @@ Once you have successfully run autoconfigure (or configure, if that's
 appropriate), you need to run make (gmake for BSD386 systems). On Solaris 2.x
 systems use the command "make -f makefile.solaris2".  Make will compile
 all the .c files and build a file called 'a.out', which is the ED executable
-program. Once you have built the program you should create a directory to hold 
-the program and some other files (or move it to a standard shared location such 
-as /usr/local/bin). Move the program (you can call it what you like, perhaps 
+program. Once you have built the program you should create a directory to hold
+the program and some other files (or move it to a standard shared location such
+as /usr/local/bin). Move the program (you can call it what you like, perhaps
 "ed" would be a good idea), *.ed, ed.setup and ed.hlp to that directory:
 
 mkdir ~/ED
@@ -153,7 +153,7 @@ BUILDING ED ON A VMS SYSTEM
 
 First of all, your VAX must have a C compiler. You can say HELP CC to determine
 whether you do. If no help is available, you probably don't. In that case, you
-should either find a system that has one or buy one.  If all else fails, 
+should either find a system that has one or buy one.  If all else fails,
 contact us to get a binary (olb or exe) distribution.
 
 VMS systems don't have unix-style networking by default - you have to buy
@@ -184,10 +184,10 @@ $ COPY ED.SETUP-VMS SYS$LOGIN:[ED]ED.SETUP
 BUILDING ED ON A DOS LIKE SYSTEM
 -------------------------------------------------------------------------------
 
-First of all, a DOS PC must have the GCC port to DOS, DJGPP.  Version 1.10 or 
+First of all, a DOS PC must have the GCC port to DOS, DJGPP.  Version 1.10 or
 later is required to run under Windows or an OS/2 DOS session.  You will also
 need the event library from LIBGRX for the keyboard handling (or define the
-symbol NO_EVENTS when compiling TTYPUT.C).  A binary distribution for DOS is 
+symbol NO_EVENTS when compiling TTYPUT.C).  A binary distribution for DOS is
 also available.  There is currently not a TCP/IP package that works with DJGPP,
 so the FTP and NEWS functions are disabled.
 
@@ -199,15 +199,15 @@ To build ED under NT, you need the Microsoft SDK.  It is as simple as saying
 "nmake -f makefile.nt" if you unpacked the files on a FAT partition.  If you
 are using HPFS or NTFS, you will need to fix the makefile to reflect the
 longer file names.  A binary distribution is available if you don't want to
-bother or don't have the SDK.  The NT distribution has FTP file editing 
+bother or don't have the SDK.  The NT distribution has FTP file editing
 enabled but does not currently support NEWS.
 
-An fully prototyped version of ED has also been built with BORLAND C, but it 
+An fully prototyped version of ED has also been built with BORLAND C, but it
 is limited to 32 Kbyte files and not very suitable for real work.  So far
 everyone I know has 386+ systems so noone thinks it's worth the effort to fix.
 
 Native OS/2 versions have also been built with GCC/2, but it is not as easy,
-since you have to link to the KBD and VIO routines.  Contact us for more 
+since you have to link to the KBD and VIO routines.  Contact us for more
 instructions for building the OS/2 native version.
 
 -------------------------------------------------------------------------------
@@ -237,12 +237,12 @@ HOW TO GET ED RUNNING
 -------------------------------------------------------------------------------
 
 There are some files in the set_size subdirectory which contain example
-code for inclusion in csh and ksh startup files for defining an alias 
-under unix systems.  There is also a program which helps to make sure 
+code for inclusion in csh and ksh startup files for defining an alias
+under unix systems.  There is also a program which helps to make sure
 the terminal size is set properly.
 
 First, define an alias (VMS users: symbol) to run the editor. I do this as
-follows on unix systems (assuming directory name you used above was ED or 
+follows on unix systems (assuming directory name you used above was ED or
 /usr/local/bin and the program was ed).
 
 with the csh shell (depending on your setup):
@@ -294,7 +294,7 @@ You may modify this file (maybe merge it with your own command key file
 created with the "unload" command) and then issue the command "load load.key".
 At this point the keys defined in a volatile state.  To save them permanently,
 issue the command "store keys", which puts them in your ed.setup file.
- 
+
 -------------------------------------------------------------------------------
 WHY IT DIDN'T WORK
 -------------------------------------------------------------------------------
@@ -531,3 +531,5 @@ RESTORE - restores editor settings and key definitions from your setup file.
 recovery - how to recover edits from the journal file (after a crash).
 recall_commands - describes command recall.
 
+
+Codacy Badge
