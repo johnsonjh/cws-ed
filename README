@@ -530,6 +530,3 @@ STORE - saves editor settings and key definitions in your setup file.
 RESTORE - restores editor settings and key definitions from your setup file.
 recovery - how to recover edits from the journal file (after a crash).
 recall_commands - describes command recall.
-
-
-Codacy Badge
